@@ -12,6 +12,7 @@
 ## 📋 What Was Implemented
 
 ### 1. **Tailwind CSS v3 + shadcn/ui Setup**
+
 - ✅ Downgraded from Tailwind v4 to v3 for shadcn/ui compatibility
 - ✅ Configured `tailwind.config.js` with shadcn/ui theme
 - ✅ Updated `app/globals.css` with CSS variables and layers
@@ -19,6 +20,7 @@
 - ✅ Created `lib/utils.ts` with `cn()` helper function
 
 ### 2. **Updated Sign-In Page** (`app/signin/page.tsx`)
+
 - ✅ Removed sign-up functionality (no toggle between sign-in/sign-up)
 - ✅ Updated messaging to "Admin Login"
 - ✅ Replaced native HTML inputs with shadcn/ui components
@@ -28,6 +30,7 @@
 - ✅ Added AlertCircle icon for error messages
 
 ### 3. **Created Admin Setup Page** (`app/setup-admin/page.tsx`)
+
 - ✅ One-time admin account creation page
 - ✅ Only works when no users exist in the system
 - ✅ Pre-filled with recommended credentials
@@ -36,11 +39,13 @@
 - ✅ Shows "Setup Complete" message if admin already exists
 
 ### 4. **Updated Middleware** (`middleware.ts`)
+
 - ✅ Added `/setup-admin` to public pages (no authentication required)
 - ✅ Maintained protection for `/` and `/server` routes
 - ✅ Redirects authenticated users away from signin page
 
 ### 5. **Created Helper Files**
+
 - ✅ `convex/adminSetup.ts` - Query to check if users exist
 - ✅ `convex/setup.ts` - Documentation for admin setup
 - ✅ `docs/ADMIN_CREDENTIALS.md` - Admin credentials documentation
@@ -50,27 +55,32 @@
 ## 🎯 Acceptance Criteria Status
 
 ### AC1: Remove Sign-Up Functionality ✅
+
 - [x] Sign-in page only shows login form
 - [x] No sign-up toggle or link
 - [x] Clean, single-purpose interface
 
 ### AC2: Admin Login Messaging ✅
+
 - [x] Page title: "Doorprize Manager"
 - [x] Subtitle: "Admin Login"
-- [x] Email placeholder: "admin@doorprize.local"
+- [x] Email placeholder: "<admin@doorprize.local>"
 
 ### AC3: Hardcoded Admin User ✅
+
 - [x] Setup page created for one-time admin creation
 - [x] Recommended credentials documented
 - [x] Email: `admin@doorprize.local`
 - [x] Password: `DoorprizeAdmin2025!`
 
 ### AC4: Error Handling ✅
+
 - [x] Generic error message: "Invalid credentials. Please try again."
 - [x] No specific details about what went wrong
 - [x] Error displayed with icon and proper styling
 
 ### AC5: Route Protection ✅
+
 - [x] `/signin` is public (no auth required)
 - [x] `/setup-admin` is public (for initial setup)
 - [x] `/` and `/server` require authentication
@@ -84,13 +94,15 @@
 ### First-Time Setup
 
 1. **Start the development server:**
+
    ```bash
    pnpm dev
    ```
 
 2. **Navigate to the setup page:**
+
    ```
-   http://localhost:3002/setup-admin
+   http://localhost:3000/setup-admin
    ```
 
 3. **Create the admin account:**
@@ -106,8 +118,9 @@
 ### Subsequent Logins
 
 1. **Navigate to:**
+
    ```
-   http://localhost:3002/signin
+   http://localhost:3000/signin
    ```
 
 2. **Enter credentials:**
@@ -121,6 +134,7 @@
 ## 📁 Files Modified/Created
 
 ### Modified Files
+
 - `app/globals.css` - Updated for Tailwind v3 + shadcn/ui
 - `app/signin/page.tsx` - Removed sign-up, added shadcn/ui components
 - `middleware.ts` - Added `/setup-admin` to public pages
@@ -128,6 +142,7 @@
 - `package.json` - Downgraded Tailwind to v3
 
 ### Created Files
+
 - `app/setup-admin/page.tsx` - One-time admin setup page
 - `convex/adminSetup.ts` - Helper query for user existence check
 - `convex/setup.ts` - Admin setup documentation
@@ -175,6 +190,7 @@
 ## 🔒 Security Notes
 
 ⚠️ **IMPORTANT:**
+
 - Default credentials are for **development/testing only**
 - **Change the password in production!**
 - Never commit production credentials to version control
@@ -235,4 +251,3 @@
 **Implementation completed successfully! 🎉**
 
 The authentication system is now ready for use. Proceed to STORY-002 (Main Menu & Dashboard) when ready.
-

@@ -9,7 +9,9 @@
     "predev": "convex dev --until-success && convex dev --once --run-sh \"node setup.mjs --once\" && convex dashboard",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "setup:admin": "npx convex run setup:createAdminUser",
+    "setup:check": "npx convex run setup:checkAdminUser"
   },
   "dependencies": {
     "@convex-dev/auth": "^0.0.90",

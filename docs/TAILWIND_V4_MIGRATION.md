@@ -13,27 +13,32 @@
 ### 1. **Package Changes**
 
 **Removed (Tailwind v3):**
+
 - `tailwindcss@3.4.0`
 - `postcss@8.5.6`
 - `autoprefixer@10.4.21`
 - `tailwindcss-animate@1.0.7`
 
 **Installed (Tailwind v4):**
+
 - `tailwindcss@4.1.16`
 - `@tailwindcss/postcss@4.1.16`
 
 ### 2. **Configuration Files**
 
 **Removed:**
+
 - `tailwind.config.js` - No longer needed in Tailwind v4
 
 **Modified:**
+
 - `postcss.config.mjs` - Already configured for v4 with `@tailwindcss/postcss`
 - `app/globals.css` - Updated to use Tailwind v4 syntax
 
 ### 3. **CSS Changes** (`app/globals.css`)
 
 **Before (Tailwind v3):**
+
 ```css
 @tailwind base;
 @tailwind components;
@@ -48,6 +53,7 @@
 ```
 
 **After (Tailwind v4):**
+
 ```css
 @import "tailwindcss";
 
@@ -79,6 +85,7 @@ Even though shadcn/ui officially only supports Tailwind v3, the components work 
 The following shadcn/ui theme variables are defined in `app/globals.css`:
 
 **Light Mode:**
+
 - `--color-background`, `--color-foreground`
 - `--color-card`, `--color-card-foreground`
 - `--color-popover`, `--color-popover-foreground`
@@ -90,9 +97,11 @@ The following shadcn/ui theme variables are defined in `app/globals.css`:
 - `--color-border`, `--color-input`, `--color-ring`
 
 **Dark Mode:**
+
 - Same variables with different values in `.dark` class
 
 **Border Radius:**
+
 - `--radius-sm`, `--radius`, `--radius-md`, `--radius-lg`, `--radius-xl`
 
 ---
@@ -110,13 +119,16 @@ The following shadcn/ui theme variables are defined in `app/globals.css`:
 ## 📁 Files Modified
 
 ### Modified Files
+
 - `package.json` - Updated dependencies
 - `app/globals.css` - Changed to Tailwind v4 syntax with `@theme`
 
 ### Removed Files
+
 - `tailwind.config.js` - No longer needed
 
 ### Unchanged Files
+
 - `postcss.config.mjs` - Already configured for v4
 - `components/ui/*` - All shadcn/ui components work as-is
 - `app/signin/page.tsx` - No changes needed
@@ -138,7 +150,8 @@ The following shadcn/ui theme variables are defined in `app/globals.css`:
 - [x] **All utility classes work as expected**
 
 ### Server Status
-- **URL:** http://localhost:3002
+
+- **URL:** <http://localhost:3000>
 - **Status:** ✅ Running
 - **Build Time:** ~2.3s (faster than v3!)
 
@@ -149,21 +162,25 @@ The following shadcn/ui theme variables are defined in `app/globals.css`:
 If you need to migrate another project, follow these steps:
 
 1. **Remove Tailwind v3 packages:**
+
    ```bash
    pnpm remove tailwindcss postcss autoprefixer tailwindcss-animate
    ```
 
 2. **Install Tailwind v4 packages:**
+
    ```bash
    pnpm add -D tailwindcss@^4 @tailwindcss/postcss
    ```
 
 3. **Remove `tailwind.config.js`:**
+
    ```bash
    rm tailwind.config.js
    ```
 
 4. **Update `postcss.config.mjs`:**
+
    ```js
    const config = {
      plugins: ["@tailwindcss/postcss"],
@@ -177,6 +194,7 @@ If you need to migrate another project, follow these steps:
    - Keep `@layer base` for custom styles
 
 6. **Test the application:**
+
    ```bash
    pnpm dev
    ```
@@ -186,16 +204,19 @@ If you need to migrate another project, follow these steps:
 ## ⚠️ Important Notes
 
 ### shadcn/ui Components
+
 - **No changes needed** to existing shadcn/ui components
 - Components will continue to work with Tailwind v4
 - If you add new components via `shadcn-ui` CLI, they may show warnings about Tailwind v3, but they'll still work
 
 ### CSS Variables
+
 - Tailwind v4 uses `@theme` instead of `:root` for theme variables
 - Variables are now prefixed with `--color-` instead of just `--`
 - This is handled automatically in `app/globals.css`
 
 ### Dark Mode
+
 - Dark mode still works with the `.dark` class
 - No changes needed to dark mode implementation
 
@@ -212,6 +233,7 @@ If you need to migrate another project, follow these steps:
 ## ✅ Conclusion
 
 The migration to Tailwind CSS v4 was successful! The application now benefits from:
+
 - ✅ Faster build times
 - ✅ Simpler configuration
 - ✅ Modern CSS syntax
@@ -223,4 +245,3 @@ The migration to Tailwind CSS v4 was successful! The application now benefits fr
 ---
 
 **Migration completed successfully! 🎉**
-
