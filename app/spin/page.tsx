@@ -28,6 +28,7 @@ export default function SpinPage() {
   const router = useRouter();
   const [spinState, setSpinState] = useState<SpinState>("idle");
   const [winner, setWinner] = useState<Participant | null>(null);
+  const [spinCount, setSpinCount] = useState(0);
   const confettiRef = useRef<CreateTypes | null>(null);
 
   // Fetch participants
@@ -89,6 +90,7 @@ export default function SpinPage() {
     if (!participants || participants.length === 0) return;
     setSpinState("spinning");
     setWinner(null);
+    setSpinCount((prev) => prev + 1);
   };
 
   // Handle spin complete
@@ -103,8 +105,9 @@ export default function SpinPage() {
 
   // Handle re-spin
   const handleRespin = () => {
-    setSpinState("idle");
+    setSpinState("spinning");
     setWinner(null);
+    setSpinCount((prev) => prev + 1);
   };
 
   // Handle confirm winner (placeholder for STORY-006)
@@ -220,6 +223,18 @@ export default function SpinPage() {
                 </CardHeader>
                 <CardContent>
                   <div className="text-center space-y-4">
+                    {/* Pending confirmation message */}
+                    <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-3 mb-4">
+                      <p className="text-yellow-800 dark:text-yellow-200 font-medium">
+                        ⚠️ Winner pending confirmation
+                      </p>
+                      {spinCount > 1 && (
+                        <p className="text-sm text-yellow-700 dark:text-yellow-300 mt-1">
+                          Spin #{spinCount}
+                        </p>
+                      )}
+                    </div>
+
                     <h2 className="text-4xl font-bold text-primary">
                       {winner.fullName}
                     </h2>
@@ -240,11 +255,16 @@ export default function SpinPage() {
                         variant="outline"
                         size="lg"
                         onClick={handleRespin}
+                        disabled={spinState === "spinning"}
                       >
                         <RotateCcw className="h-5 w-5 mr-2" />
                         Re-spin
                       </Button>
-                      <Button size="lg" onClick={handleConfirmWinner}>
+                      <Button
+                        size="lg"
+                        onClick={handleConfirmWinner}
+                        disabled={spinState === "spinning"}
+                      >
                         <CheckCircle className="h-5 w-5 mr-2" />
                         Confirm Winner
                       </Button>
