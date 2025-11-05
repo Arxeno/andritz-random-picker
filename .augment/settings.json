@@ -1,0 +1,32 @@
+{
+  "mcpServers": {
+    "sequential-thinking": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
+    },
+    "context7": {
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp@latest"]
+    },
+    "time": {
+      "command": "uvx",
+      "args": ["mcp-server-time", "--local-timezone=Asia/Jakarta"]
+    },
+    "Playwright": {
+      "command": "npx",
+      "args": ["-y", "@playwright/mcp@latest", "--browser", "chromium"],
+      "disabled": true
+    },
+    "TestSprite": {
+      "command": "npx @testsprite/testsprite-mcp@latest",
+      "env": {
+        "API_KEY": "sk-user-OFu1yR6VzGCiFaaONy12-NH2sb3kTMqqCFeOOw2jrpnMd-282NoSV4y9lE-sJXveg1QY6pWvIGTCd8tB96PPeGUi0yhIicB8VfpNE0nPo1Xq73XglYuj9hg7hZw5gFqlcYA"
+      },
+      "args": []
+    },
+    "Omni": {
+      "url": "https://omnisearch.prasai.my.id/sse",
+      "type": "sse"
+    }
+  }
+}
