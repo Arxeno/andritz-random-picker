@@ -12,7 +12,8 @@
     "lint": "next lint",
     "setup:admin": "npx convex run setup:createAdminUser",
     "setup:check": "npx convex run setup:checkAdminUser",
-    "generate:keys": "node generateKeys.mjs"
+    "generate:keys": "node generateKeys.mjs",
+    "set:convex-env": "node set-convex-env.mjs"
   },
   "dependencies": {
     "@convex-dev/auth": "^0.0.90",
