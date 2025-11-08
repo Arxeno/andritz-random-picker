@@ -26,8 +26,7 @@ import { Id } from "@/convex/_generated/dataModel";
 interface Participant {
   _id: Id<"participants">;
   fullName: string;
-  email: string;
-  phone: string;
+  department: string;
 }
 
 interface ParticipantTableProps {
@@ -85,8 +84,7 @@ export function ParticipantTable({
           <TableHeader>
             <TableRow>
               <TableHead>Full Name</TableHead>
-              <TableHead>Email</TableHead>
-              <TableHead>Phone Number</TableHead>
+              <TableHead>Department</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
@@ -96,8 +94,7 @@ export function ParticipantTable({
                 <TableCell className="font-medium">
                   {participant.fullName}
                 </TableCell>
-                <TableCell>{participant.email}</TableCell>
-                <TableCell>{participant.phone}</TableCell>
+                <TableCell>{participant.department}</TableCell>
                 <TableCell className="text-right">
                   <div className="flex justify-end gap-2">
                     <Button
@@ -124,13 +121,16 @@ export function ParticipantTable({
         </Table>
       </div>
 
-      <AlertDialog open={deleteId !== null} onOpenChange={() => setDeleteId(null)}>
+      <AlertDialog
+        open={deleteId !== null}
+        onOpenChange={() => setDeleteId(null)}
+      >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Are you sure?</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete <strong>{deleteName}</strong>? This
-              action cannot be undone.
+              Are you sure you want to delete <strong>{deleteName}</strong>?
+              This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -148,4 +148,3 @@ export function ParticipantTable({
     </>
   );
 }
-

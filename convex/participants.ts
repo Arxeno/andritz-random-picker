@@ -7,32 +7,21 @@ import { v } from "convex/values";
 export const addParticipant = mutation({
   args: {
     fullName: v.string(),
-    email: v.string(),
-    phone: v.string(),
+    department: v.string(),
   },
   handler: async (ctx, args) => {
     // Validate inputs
     if (!args.fullName.trim()) {
       throw new Error("Full name is required");
     }
-    if (!args.email.trim()) {
-      throw new Error("Email is required");
-    }
-    if (!args.phone.trim()) {
-      throw new Error("Phone number is required");
-    }
-
-    // Basic email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(args.email)) {
-      throw new Error("Invalid email format");
+    if (!args.department.trim()) {
+      throw new Error("Department is required");
     }
 
     // Insert participant
     const participantId = await ctx.db.insert("participants", {
       fullName: args.fullName.trim(),
-      email: args.email.trim().toLowerCase(),
-      phone: args.phone.trim(),
+      department: args.department.trim(),
     });
 
     return participantId;
@@ -46,16 +35,14 @@ export const listParticipants = query({
   args: {},
   handler: async (ctx) => {
     const participants = await ctx.db.query("participants").collect();
-    
+
     // Sort alphabetically by name
-    return participants.sort((a, b) => 
-      a.fullName.localeCompare(b.fullName)
-    );
+    return participants.sort((a, b) => a.fullName.localeCompare(b.fullName));
   },
 });
 
 /**
- * Search participants by name, email, or phone
+ * Search participants by name or department
  */
 export const searchParticipants = query({
   args: {
@@ -63,23 +50,21 @@ export const searchParticipants = query({
   },
   handler: async (ctx, args) => {
     const allParticipants = await ctx.db.query("participants").collect();
-    
+
     if (!args.searchTerm.trim()) {
-      return allParticipants.sort((a, b) => 
-        a.fullName.localeCompare(b.fullName)
+      return allParticipants.sort((a, b) =>
+        a.fullName.localeCompare(b.fullName),
       );
     }
 
     const searchLower = args.searchTerm.toLowerCase();
-    const filtered = allParticipants.filter(p => 
-      p.fullName.toLowerCase().includes(searchLower) ||
-      p.email.toLowerCase().includes(searchLower) ||
-      p.phone.includes(searchLower)
+    const filtered = allParticipants.filter(
+      (p) =>
+        p.fullName.toLowerCase().includes(searchLower) ||
+        p.department.toLowerCase().includes(searchLower),
     );
 
-    return filtered.sort((a, b) => 
-      a.fullName.localeCompare(b.fullName)
-    );
+    return filtered.sort((a, b) => a.fullName.localeCompare(b.fullName));
   },
 });
 
@@ -90,32 +75,21 @@ export const updateParticipant = mutation({
   args: {
     id: v.id("participants"),
     fullName: v.string(),
-    email: v.string(),
-    phone: v.string(),
+    department: v.string(),
   },
   handler: async (ctx, args) => {
     // Validate inputs
     if (!args.fullName.trim()) {
       throw new Error("Full name is required");
     }
-    if (!args.email.trim()) {
-      throw new Error("Email is required");
-    }
-    if (!args.phone.trim()) {
-      throw new Error("Phone number is required");
-    }
-
-    // Basic email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(args.email)) {
-      throw new Error("Invalid email format");
+    if (!args.department.trim()) {
+      throw new Error("Department is required");
     }
 
     // Update participant
     await ctx.db.patch(args.id, {
       fullName: args.fullName.trim(),
-      email: args.email.trim().toLowerCase(),
-      phone: args.phone.trim(),
+      department: args.department.trim(),
     });
 
     return args.id;
@@ -132,9 +106,11 @@ export const checkIfWinner = query({
   handler: async (ctx, args) => {
     const winner = await ctx.db
       .query("winners")
-      .withIndex("by_participant", (q) => q.eq("participantId", args.participantId))
+      .withIndex("by_participant", (q) =>
+        q.eq("participantId", args.participantId),
+      )
       .first();
-    
+
     return winner !== null;
   },
 });
@@ -154,12 +130,14 @@ export const deleteParticipant = mutation({
       .first();
 
     if (winner) {
-      throw new Error("Cannot delete a participant who has already won a prize");
+      throw new Error(
+        "Cannot delete a participant who has already won a prize",
+      );
     }
 
     // Delete participant
     await ctx.db.delete(args.id);
-    
+
     return args.id;
   },
 });
@@ -172,9 +150,8 @@ export const bulkAddParticipants = mutation({
     participants: v.array(
       v.object({
         fullName: v.string(),
-        email: v.string(),
-        phone: v.string(),
-      })
+        department: v.string(),
+      }),
     ),
   },
   handler: async (ctx, args) => {
@@ -186,36 +163,27 @@ export const bulkAddParticipants = mutation({
 
     for (let i = 0; i < args.participants.length; i++) {
       const participant = args.participants[i];
-      
+
       try {
         // Validate
         if (!participant.fullName?.trim()) {
           throw new Error("Full name is required");
         }
-        if (!participant.email?.trim()) {
-          throw new Error("Email is required");
-        }
-        if (!participant.phone?.trim()) {
-          throw new Error("Phone number is required");
-        }
-
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(participant.email)) {
-          throw new Error("Invalid email format");
+        if (!participant.department?.trim()) {
+          throw new Error("Department is required");
         }
 
         // Insert
         await ctx.db.insert("participants", {
           fullName: participant.fullName.trim(),
-          email: participant.email.trim().toLowerCase(),
-          phone: participant.phone.trim(),
+          department: participant.department.trim(),
         });
 
         results.success++;
       } catch (error) {
         results.failed++;
         results.errors.push(
-          `Row ${i + 1}: ${error instanceof Error ? error.message : "Unknown error"}`
+          `Row ${i + 1}: ${error instanceof Error ? error.message : "Unknown error"}`,
         );
       }
     }
@@ -242,12 +210,14 @@ export const deleteAllParticipants = mutation({
   args: {},
   handler: async (ctx) => {
     const participants = await ctx.db.query("participants").collect();
-    
+
     for (const participant of participants) {
       // Check if participant is a winner
       const winner = await ctx.db
         .query("winners")
-        .withIndex("by_participant", (q) => q.eq("participantId", participant._id))
+        .withIndex("by_participant", (q) =>
+          q.eq("participantId", participant._id),
+        )
         .first();
 
       if (!winner) {
@@ -258,4 +228,3 @@ export const deleteAllParticipants = mutation({
     return { deleted: participants.length };
   },
 });
-

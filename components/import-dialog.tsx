@@ -15,8 +15,7 @@ import * as XLSX from "xlsx";
 
 interface ImportedParticipant {
   fullName: string;
-  email: string;
-  phone: string;
+  department: string;
 }
 
 interface ImportDialogProps {
@@ -25,7 +24,11 @@ interface ImportDialogProps {
   onImport: (participants: ImportedParticipant[]) => Promise<void>;
 }
 
-export function ImportDialog({ open, onOpenChange, onImport }: ImportDialogProps) {
+export function ImportDialog({
+  open,
+  onOpenChange,
+  onImport,
+}: ImportDialogProps) {
   const [importedData, setImportedData] = useState<ImportedParticipant[]>([]);
   const [errors, setErrors] = useState<string[]>([]);
   const [isImporting, setIsImporting] = useState(false);
@@ -34,19 +37,27 @@ export function ImportDialog({ open, onOpenChange, onImport }: ImportDialogProps
   const handleDownloadTemplate = () => {
     // Create sample data
     const templateData = [
-      { "Full Name": "John Doe", "Email": "john@example.com", "Phone Number": "(555) 123-4567" },
-      { "Full Name": "Jane Smith", "Email": "jane@example.com", "Phone Number": "(555) 987-6543" },
-      { "Full Name": "Bob Johnson", "Email": "bob@example.com", "Phone Number": "(555) 555-5555" },
+      {
+        "Full Name": "John Doe",
+        Department: "Engineering",
+      },
+      {
+        "Full Name": "Jane Smith",
+        Department: "Marketing",
+      },
+      {
+        "Full Name": "Bob Johnson",
+        Department: "Sales",
+      },
     ];
 
     // Create worksheet
     const ws = XLSX.utils.json_to_sheet(templateData);
-    
+
     // Set column widths
     ws["!cols"] = [
       { wch: 20 }, // Full Name
-      { wch: 25 }, // Email
-      { wch: 20 }, // Phone Number
+      { wch: 20 }, // Department
     ];
 
     // Create workbook
@@ -66,11 +77,11 @@ export function ImportDialog({ open, onOpenChange, onImport }: ImportDialogProps
       try {
         const data = new Uint8Array(event.target?.result as ArrayBuffer);
         const workbook = XLSX.read(data, { type: "array" });
-        
+
         // Get first sheet
         const sheetName = workbook.SheetNames[0];
         const worksheet = workbook.Sheets[sheetName];
-        
+
         // Convert to JSON
         const jsonData = XLSX.utils.sheet_to_json(worksheet) as any[];
 
@@ -86,41 +97,29 @@ export function ImportDialog({ open, onOpenChange, onImport }: ImportDialogProps
             validationErrors.push(`Row ${rowNum}: Missing "Full Name" column`);
             return;
           }
-          if (!row["Email"] && !row["email"]) {
-            validationErrors.push(`Row ${rowNum}: Missing "Email" column`);
-            return;
-          }
-          if (!row["Phone Number"] && !row["phone"] && !row["Phone"]) {
-            validationErrors.push(`Row ${rowNum}: Missing "Phone Number" column`);
+          if (!row["Department"] && !row["department"]) {
+            validationErrors.push(`Row ${rowNum}: Missing "Department" column`);
             return;
           }
 
-          const fullName = (row["Full Name"] || row["fullName"] || "").toString().trim();
-          const email = (row["Email"] || row["email"] || "").toString().trim();
-          const phone = (row["Phone Number"] || row["phone"] || row["Phone"] || "").toString().trim();
+          const fullName = (row["Full Name"] || row["fullName"] || "")
+            .toString()
+            .trim();
+          const department = (row["Department"] || row["department"] || "")
+            .toString()
+            .trim();
 
           // Validate data
           if (!fullName) {
             validationErrors.push(`Row ${rowNum}: Full name is empty`);
             return;
           }
-          if (!email) {
-            validationErrors.push(`Row ${rowNum}: Email is empty`);
-            return;
-          }
-          if (!phone) {
-            validationErrors.push(`Row ${rowNum}: Phone number is empty`);
+          if (!department) {
+            validationErrors.push(`Row ${rowNum}: Department is empty`);
             return;
           }
 
-          // Basic email validation
-          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-          if (!emailRegex.test(email)) {
-            validationErrors.push(`Row ${rowNum}: Invalid email format (${email})`);
-            return;
-          }
-
-          participants.push({ fullName, email, phone });
+          participants.push({ fullName, department });
         });
 
         if (validationErrors.length > 0) {
@@ -131,7 +130,9 @@ export function ImportDialog({ open, onOpenChange, onImport }: ImportDialogProps
           setImportedData(participants);
         }
       } catch (error) {
-        setErrors([`Failed to read file: ${error instanceof Error ? error.message : "Unknown error"}`]);
+        setErrors([
+          `Failed to read file: ${error instanceof Error ? error.message : "Unknown error"}`,
+        ]);
         setImportedData([]);
       }
     };
@@ -146,7 +147,7 @@ export function ImportDialog({ open, onOpenChange, onImport }: ImportDialogProps
       setImportedData([]);
       setErrors([]);
       onOpenChange(false);
-      
+
       // Reset file input
       if (fileInputRef.current) {
         fileInputRef.current.value = "";
@@ -162,7 +163,7 @@ export function ImportDialog({ open, onOpenChange, onImport }: ImportDialogProps
     setImportedData([]);
     setErrors([]);
     onOpenChange(false);
-    
+
     // Reset file input
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
@@ -175,8 +176,8 @@ export function ImportDialog({ open, onOpenChange, onImport }: ImportDialogProps
         <DialogHeader>
           <DialogTitle>Import Participants from Excel</DialogTitle>
           <DialogDescription>
-            Upload an Excel file (.xlsx) with participant data. Download the template
-            to see the required format.
+            Upload an Excel file (.xlsx) with participant data. Download the
+            template to see the required format.
           </DialogDescription>
         </DialogHeader>
 
@@ -249,18 +250,23 @@ export function ImportDialog({ open, onOpenChange, onImport }: ImportDialogProps
         </div>
 
         <DialogFooter>
-          <Button variant="outline" onClick={handleCancel} disabled={isImporting}>
+          <Button
+            variant="outline"
+            onClick={handleCancel}
+            disabled={isImporting}
+          >
             Cancel
           </Button>
           <Button
             onClick={handleImport}
             disabled={importedData.length === 0 || isImporting}
           >
-            {isImporting ? "Importing..." : `Import ${importedData.length} Participants`}
+            {isImporting
+              ? "Importing..."
+              : `Import ${importedData.length} Participants`}
           </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
   );
 }
-

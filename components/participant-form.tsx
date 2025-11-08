@@ -8,8 +8,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AlertCircle, CheckCircle2, UserPlus } from "lucide-react";
 
 interface ParticipantFormProps {
-  onSubmit: (data: { fullName: string; email: string; phone: string }) => Promise<void>;
-  initialData?: { fullName: string; email: string; phone: string };
+  onSubmit: (data: { fullName: string; department: string }) => Promise<void>;
+  initialData?: { fullName: string; department: string };
   submitLabel?: string;
   title?: string;
 }
@@ -21,8 +21,7 @@ export function ParticipantForm({
   title = "Add Participant",
 }: ParticipantFormProps) {
   const [fullName, setFullName] = useState(initialData?.fullName || "");
-  const [email, setEmail] = useState(initialData?.email || "");
-  const [phone, setPhone] = useState(initialData?.phone || "");
+  const [department, setDepartment] = useState(initialData?.department || "");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
@@ -34,19 +33,20 @@ export function ParticipantForm({
     setIsLoading(true);
 
     try {
-      await onSubmit({ fullName, email, phone });
-      
+      await onSubmit({ fullName, department });
+
       // Clear form only if not editing (no initial data)
       if (!initialData) {
         setFullName("");
-        setEmail("");
-        setPhone("");
+        setDepartment("");
       }
-      
+
       setSuccess(true);
       setTimeout(() => setSuccess(false), 3000);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to save participant");
+      setError(
+        err instanceof Error ? err.message : "Failed to save participant",
+      );
     } finally {
       setIsLoading(false);
     }
@@ -62,7 +62,7 @@ export function ParticipantForm({
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="fullName">Full Name *</Label>
               <Input
@@ -76,26 +76,12 @@ export function ParticipantForm({
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="email">Email *</Label>
+              <Label htmlFor="department">Department *</Label>
               <Input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="john@example.com"
-                required
-                disabled={isLoading}
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="phone">Phone Number *</Label>
-              <Input
-                id="phone"
-                type="tel"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                placeholder="(555) 123-4567"
+                id="department"
+                value={department}
+                onChange={(e) => setDepartment(e.target.value)}
+                placeholder="Engineering"
                 required
                 disabled={isLoading}
               />
@@ -124,4 +110,3 @@ export function ParticipantForm({
     </Card>
   );
 }
-

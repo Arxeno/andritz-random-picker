@@ -12,7 +12,10 @@ import type * as adminSetup from "../adminSetup.js";
 import type * as auth from "../auth.js";
 import type * as dashboard from "../dashboard.js";
 import type * as http from "../http.js";
+import type * as participants from "../participants.js";
 import type * as setup from "../setup.js";
+import type * as spin from "../spin.js";
+import type * as winners from "../winners.js";
 
 import type {
   ApiFromModules,
@@ -33,7 +36,10 @@ declare const fullApi: ApiFromModules<{
   auth: typeof auth;
   dashboard: typeof dashboard;
   http: typeof http;
+  participants: typeof participants;
   setup: typeof setup;
+  spin: typeof spin;
+  winners: typeof winners;
 }>;
 declare const fullApiWithMounts: typeof fullApi;
 

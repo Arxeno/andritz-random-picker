@@ -13,7 +13,7 @@ export const confirmWinner = mutation({
   handler: async (ctx, args) => {
     // Get participant details
     const participant = await ctx.db.get(args.participantId);
-    
+
     if (!participant) {
       throw new Error("Participant not found");
     }
@@ -22,8 +22,7 @@ export const confirmWinner = mutation({
     const winnerId = await ctx.db.insert("winners", {
       participantId: args.participantId,
       participantName: participant.fullName,
-      participantEmail: participant.email,
-      participantPhone: participant.phone,
+      participantDepartment: participant.department,
     });
 
     return winnerId;
@@ -38,7 +37,7 @@ export const listWinners = query({
   args: {},
   handler: async (ctx) => {
     const winners = await ctx.db.query("winners").collect();
-    
+
     // Sort by _creationTime descending (newest first)
     return winners.sort((a, b) => b._creationTime - a._creationTime);
   },
@@ -67,10 +66,11 @@ export const checkIfWinner = query({
   handler: async (ctx, args) => {
     const winner = await ctx.db
       .query("winners")
-      .withIndex("by_participant", (q) => q.eq("participantId", args.participantId))
+      .withIndex("by_participant", (q) =>
+        q.eq("participantId", args.participantId),
+      )
       .first();
-    
+
     return winner !== null;
   },
 });
-

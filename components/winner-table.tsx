@@ -17,8 +17,7 @@ import { Id } from "@/convex/_generated/dataModel";
 interface Winner {
   _id: Id<"winners">;
   participantName: string;
-  participantEmail: string;
-  participantPhone: string;
+  participantDepartment: string;
   _creationTime: number;
 }
 
@@ -52,8 +51,7 @@ export function WinnerTable({ winners }: WinnerTableProps) {
     return winners.filter(
       (winner) =>
         winner.participantName.toLowerCase().includes(lowerSearch) ||
-        winner.participantEmail.toLowerCase().includes(lowerSearch) ||
-        winner.participantPhone.includes(searchTerm)
+        winner.participantDepartment.toLowerCase().includes(lowerSearch),
     );
   }, [winners, searchTerm]);
 
@@ -65,7 +63,7 @@ export function WinnerTable({ winners }: WinnerTableProps) {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
             type="text"
-            placeholder="Search by name, email, or phone..."
+            placeholder="Search by name or department..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="pl-10"
@@ -101,8 +99,7 @@ export function WinnerTable({ winners }: WinnerTableProps) {
                 <TableHeader>
                   <TableRow>
                     <TableHead className="w-[200px]">Winner Name</TableHead>
-                    <TableHead className="w-[250px]">Email</TableHead>
-                    <TableHead className="w-[150px]">Phone Number</TableHead>
+                    <TableHead className="w-[200px]">Department</TableHead>
                     <TableHead className="w-[200px]">Date/Time Won</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -112,8 +109,7 @@ export function WinnerTable({ winners }: WinnerTableProps) {
                       <TableCell className="font-medium">
                         {winner.participantName}
                       </TableCell>
-                      <TableCell>{winner.participantEmail}</TableCell>
-                      <TableCell>{winner.participantPhone}</TableCell>
+                      <TableCell>{winner.participantDepartment}</TableCell>
                       <TableCell className="text-muted-foreground">
                         {formatTimestamp(winner._creationTime)}
                       </TableCell>
@@ -129,9 +125,7 @@ export function WinnerTable({ winners }: WinnerTableProps) {
           <CardContent className="py-12">
             <div className="text-center text-muted-foreground">
               <p className="text-lg">No results found</p>
-              <p className="text-sm mt-2">
-                Try adjusting your search criteria
-              </p>
+              <p className="text-sm mt-2">Try adjusting your search criteria</p>
             </div>
           </CardContent>
         </Card>
@@ -139,4 +133,3 @@ export function WinnerTable({ winners }: WinnerTableProps) {
     </div>
   );
 }
-
