@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/dialog";
 import { AlertCircle, CheckCircle2, Download, Upload } from "lucide-react";
 import * as XLSX from "xlsx";
+import { DEPARTMENTS } from "@/lib/constants";
 
 interface ImportedParticipant {
   fullName: string;
@@ -35,19 +36,27 @@ export function ImportDialog({
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleDownloadTemplate = () => {
-    // Create sample data
+    // Create sample data with valid departments
     const templateData = [
       {
         "Full Name": "John Doe",
-        Department: "Engineering",
+        Department: "Engineering (PKW)",
       },
       {
         "Full Name": "Jane Smith",
-        Department: "Marketing",
+        Department: "HR",
       },
       {
         "Full Name": "Bob Johnson",
-        Department: "Sales",
+        Department: "Sales (PKW)",
+      },
+      {
+        "Full Name": "Alice Williams",
+        Department: "IT",
+      },
+      {
+        "Full Name": "Charlie Brown",
+        Department: "Field Service (PKF)",
       },
     ];
 
@@ -56,8 +65,8 @@ export function ImportDialog({
 
     // Set column widths
     ws["!cols"] = [
-      { wch: 20 }, // Full Name
-      { wch: 20 }, // Department
+      { wch: 25 }, // Full Name
+      { wch: 35 }, // Department (wider for longer names)
     ];
 
     // Create workbook
@@ -116,6 +125,14 @@ export function ImportDialog({
           }
           if (!department) {
             validationErrors.push(`Row ${rowNum}: Department is empty`);
+            return;
+          }
+
+          // Validate department is one of the allowed values
+          if (!DEPARTMENTS.includes(department as any)) {
+            validationErrors.push(
+              `Row ${rowNum}: Invalid department "${department}". Must be one of: ${DEPARTMENTS.join(", ")}`,
+            );
             return;
           }
 
@@ -182,6 +199,15 @@ export function ImportDialog({
         </DialogHeader>
 
         <div className="space-y-4">
+          {/* Valid departments info */}
+          <div className="rounded-md bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 p-3">
+            <p className="text-sm font-semibold text-blue-800 dark:text-blue-200 mb-1">
+              Valid Departments:
+            </p>
+            <p className="text-xs text-blue-700 dark:text-blue-300">
+              {DEPARTMENTS.join(", ")}
+            </p>
+          </div>
           <div className="flex gap-2">
             <Button
               type="button"

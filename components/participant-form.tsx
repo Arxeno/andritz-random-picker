@@ -5,7 +5,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { AlertCircle, CheckCircle2, UserPlus } from "lucide-react";
+import { DEPARTMENTS } from "@/lib/constants";
 
 interface ParticipantFormProps {
   onSubmit: (data: { fullName: string; department: string }) => Promise<void>;
@@ -77,14 +85,23 @@ export function ParticipantForm({
 
             <div className="space-y-2">
               <Label htmlFor="department">Department *</Label>
-              <Input
-                id="department"
+              <Select
                 value={department}
-                onChange={(e) => setDepartment(e.target.value)}
-                placeholder="Engineering"
-                required
+                onValueChange={setDepartment}
                 disabled={isLoading}
-              />
+                required
+              >
+                <SelectTrigger id="department">
+                  <SelectValue placeholder="Select department" />
+                </SelectTrigger>
+                <SelectContent>
+                  {DEPARTMENTS.map((dept) => (
+                    <SelectItem key={dept} value={dept}>
+                      {dept}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
           </div>
 
