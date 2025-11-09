@@ -20,4 +20,10 @@ export default defineSchema({
     participantName: v.string(), // Denormalized for easy export
     participantDepartment: v.string(), // Denormalized for easy export
   }).index("by_participant", ["participantId"]),
+
+  // Prizes table - stores prize information with images
+  prizes: defineTable({
+    name: v.string(),
+    imageStorageId: v.optional(v.id("_storage")), // Convex file storage ID
+  }),
 });

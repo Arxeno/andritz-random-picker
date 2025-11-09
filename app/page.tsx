@@ -12,6 +12,7 @@ import {
   Disc3,
   History,
   Download,
+  Gift,
 } from "lucide-react";
 
 export default function Home() {
@@ -25,7 +26,7 @@ export default function Home() {
           {/* Dashboard Stats Section */}
           <section>
             <h2 className="text-2xl font-bold mb-4">📊 Dashboard Stats</h2>
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-2">
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
               <StatCard
                 title="Total Participants"
                 value={stats?.participantCount ?? 0}
@@ -38,18 +39,30 @@ export default function Home() {
                 icon={Trophy}
                 loading={stats === undefined}
               />
+              <StatCard
+                title="Total Prizes"
+                value={stats?.prizeCount ?? 0}
+                icon={Gift}
+                loading={stats === undefined}
+              />
             </div>
           </section>
 
           {/* Quick Actions Section */}
           <section>
             <h2 className="text-2xl font-bold mb-4">🎯 Quick Actions</h2>
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
               <NavigationCard
                 title="Manage Participants"
                 description="Add, import, and manage event participants"
                 icon={UserPlus}
                 href="/participants"
+              />
+              <NavigationCard
+                title="Manage Prizes"
+                description="Add and manage prizes for your event"
+                icon={Gift}
+                href="/prizes"
               />
               <NavigationCard
                 title="Spin the Wheel"

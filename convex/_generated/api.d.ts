@@ -11,8 +11,10 @@
 import type * as adminSetup from "../adminSetup.js";
 import type * as auth from "../auth.js";
 import type * as dashboard from "../dashboard.js";
+import type * as files from "../files.js";
 import type * as http from "../http.js";
 import type * as participants from "../participants.js";
+import type * as prizes from "../prizes.js";
 import type * as setup from "../setup.js";
 import type * as spin from "../spin.js";
 import type * as winners from "../winners.js";
@@ -35,8 +37,10 @@ declare const fullApi: ApiFromModules<{
   adminSetup: typeof adminSetup;
   auth: typeof auth;
   dashboard: typeof dashboard;
+  files: typeof files;
   http: typeof http;
   participants: typeof participants;
+  prizes: typeof prizes;
   setup: typeof setup;
   spin: typeof spin;
   winners: typeof winners;
