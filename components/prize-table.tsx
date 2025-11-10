@@ -21,7 +21,14 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Card, CardContent } from "@/components/ui/card";
-import { Edit, Trash2, Image as ImageIcon } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import {
+  Edit,
+  Trash2,
+  Image as ImageIcon,
+  Trophy,
+  CheckCircle,
+} from "lucide-react";
 import { Id } from "@/convex/_generated/dataModel";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
@@ -30,6 +37,7 @@ interface Prize {
   _id: Id<"prizes">;
   name: string;
   imageStorageId?: Id<"_storage">;
+  status: "available" | "won";
 }
 
 interface PrizeTableProps {
@@ -81,7 +89,10 @@ export function PrizeTable({ prizes, onEdit, onDelete }: PrizeTableProps) {
                 <TableRow>
                   <TableHead className="w-[100px]">Image</TableHead>
                   <TableHead>Prize Name</TableHead>
-                  <TableHead className="text-right w-[150px]">Actions</TableHead>
+                  <TableHead className="w-[120px]">Status</TableHead>
+                  <TableHead className="text-right w-[150px]">
+                    Actions
+                  </TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -97,6 +108,25 @@ export function PrizeTable({ prizes, onEdit, onDelete }: PrizeTableProps) {
                       )}
                     </TableCell>
                     <TableCell className="font-medium">{prize.name}</TableCell>
+                    <TableCell>
+                      {prize.status === "won" ? (
+                        <Badge
+                          variant="secondary"
+                          className="bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
+                        >
+                          <Trophy className="h-3 w-3 mr-1" />
+                          Won
+                        </Badge>
+                      ) : (
+                        <Badge
+                          variant="outline"
+                          className="bg-green-50 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800"
+                        >
+                          <CheckCircle className="h-3 w-3 mr-1" />
+                          Available
+                        </Badge>
+                      )}
+                    </TableCell>
                     <TableCell className="text-right">
                       <div className="flex justify-end gap-2">
                         <Button
@@ -154,9 +184,7 @@ function PrizeImage({ storageId }: { storageId: Id<"_storage"> }) {
   const imageUrl = useQuery(api.files.getUrl, { storageId });
 
   if (!imageUrl) {
-    return (
-      <div className="w-16 h-16 bg-muted rounded animate-pulse" />
-    );
+    return <div className="w-16 h-16 bg-muted rounded animate-pulse" />;
   }
 
   return (
@@ -167,4 +195,3 @@ function PrizeImage({ storageId }: { storageId: Id<"_storage"> }) {
     />
   );
 }
-

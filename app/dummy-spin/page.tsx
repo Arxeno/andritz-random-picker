@@ -57,9 +57,14 @@ export default function DummySpinPage() {
   const [currentPrizeIndex, setCurrentPrizeIndex] = useState(0);
   const confettiRef = useRef<CreateTypes | null>(null);
 
-  // Use dummy data
+  // Use dummy data with state to track prize status
   const participants = DUMMY_PARTICIPANTS;
-  const prizes = DUMMY_PRIZES;
+  const [prizes, setPrizes] = useState<DummyPrize[]>(DUMMY_PRIZES);
+
+  // Filter available prizes
+  const availablePrizes = prizes.filter(
+    (prize) => prize.status === "available",
+  );
 
   // Track carousel selection
   useEffect(() => {
@@ -79,8 +84,8 @@ export default function DummySpinPage() {
 
   // Update selected prize when carousel changes
   useEffect(() => {
-    setSelectedPrize(prizes[currentPrizeIndex]);
-  }, [currentPrizeIndex, prizes]);
+    setSelectedPrize(availablePrizes[currentPrizeIndex]);
+  }, [currentPrizeIndex, availablePrizes]);
 
   // Confetti instance
   const getInstance = useCallback((instance: CreateTypes | null) => {
@@ -184,6 +189,15 @@ export default function DummySpinPage() {
         timestamp: new Date().toISOString(),
       });
 
+      // Mark the selected prize as won
+      if (selectedPrize) {
+        setPrizes((prevPrizes) =>
+          prevPrizes.map((p) =>
+            p.id === selectedPrize.id ? { ...p, status: "won" as const } : p,
+          ),
+        );
+      }
+
       setConfirmState("confirmed");
       toast.success("Winner confirmed! 🎉 (Development Mode)", {
         description: `${winner.fullName} - Check console for details`,
@@ -265,59 +279,75 @@ export default function DummySpinPage() {
                 <h2 className="text-2xl font-bold text-center mb-4">
                   Current Prize
                 </h2>
-                <Carousel
-                  setApi={setCarouselApi}
-                  opts={{
-                    align: "center",
-                    loop: true,
-                  }}
-                  className="w-[400px] mx-auto"
-                >
-                  <CarouselContent>
-                    {prizes.map((prize, index) => (
-                      <CarouselItem
-                        key={prize.id}
-                        className="flex justify-center"
-                      >
-                        <Card className="border-2 border-primary/20 p-0 w-[300px]">
-                          <CardContent>
-                            <div className="flex flex-col items-center gap-2">
-                              {/* Prize Image */}
-                              {prize.imageUrl ? (
-                                <div className="w-fit max-w-sm aspect-square rounded-lg overflow-hidden bg-muted">
-                                  <img
-                                    src={prize.imageUrl}
-                                    alt={prize.name}
-                                    className="w-[200px] aspect-square object-contain"
-                                  />
-                                </div>
-                              ) : (
-                                <div className="w-full max-w-sm aspect-square rounded-lg bg-muted flex items-center justify-center">
-                                  <Gift className="h-24 w-24 text-muted-foreground" />
-                                </div>
-                              )}
+                {availablePrizes.length === 0 ? (
+                  <Card className="border-2 border-yellow-500/50 p-6 w-[400px] mx-auto">
+                    <CardContent className="text-center space-y-4">
+                      <AlertTriangle className="h-16 w-16 mx-auto text-yellow-500" />
+                      <h3 className="text-xl font-bold">All Prizes Won!</h3>
+                      <p className="text-muted-foreground">
+                        All prizes have been distributed. No more prizes
+                        available for spinning.
+                      </p>
+                    </CardContent>
+                  </Card>
+                ) : (
+                  <>
+                    <Carousel
+                      setApi={setCarouselApi}
+                      opts={{
+                        align: "center",
+                        loop: true,
+                      }}
+                      className="w-[400px] mx-auto"
+                    >
+                      <CarouselContent>
+                        {availablePrizes.map((prize, index) => (
+                          <CarouselItem
+                            key={prize.id}
+                            className="flex justify-center"
+                          >
+                            <Card className="border-2 border-primary/20 p-0 w-[300px]">
+                              <CardContent>
+                                <div className="flex flex-col items-center gap-2">
+                                  {/* Prize Image */}
+                                  {prize.imageUrl ? (
+                                    <div className="w-fit max-w-sm aspect-square rounded-lg overflow-hidden bg-muted">
+                                      <img
+                                        src={prize.imageUrl}
+                                        alt={prize.name}
+                                        className="w-[200px] aspect-square object-contain"
+                                      />
+                                    </div>
+                                  ) : (
+                                    <div className="w-full max-w-sm aspect-square rounded-lg bg-muted flex items-center justify-center">
+                                      <Gift className="h-24 w-24 text-muted-foreground" />
+                                    </div>
+                                  )}
 
-                              {/* Prize Name */}
-                              <div className="text-center">
-                                <h3 className="text-2xl font-bold text-primary">
-                                  {prize.name}
-                                </h3>
-                                <p className="text-sm text-muted-foreground mt-2">
-                                  Prize {index + 1} of {prizes.length}
-                                </p>
-                              </div>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      </CarouselItem>
-                    ))}
-                  </CarouselContent>
-                  <CarouselPrevious className="left-0" />
-                  <CarouselNext className="right-0" />
-                </Carousel>
-                <p className="text-center text-sm text-muted-foreground mt-4">
-                  ← Swipe or use arrows to select prize →
-                </p>
+                                  {/* Prize Name */}
+                                  <div className="text-center">
+                                    <h3 className="text-2xl font-bold text-primary">
+                                      {prize.name}
+                                    </h3>
+                                    <p className="text-sm text-muted-foreground mt-2">
+                                      Prize {index + 1} of{" "}
+                                      {availablePrizes.length}
+                                    </p>
+                                  </div>
+                                </div>
+                              </CardContent>
+                            </Card>
+                          </CarouselItem>
+                        ))}
+                      </CarouselContent>
+                      <CarouselPrevious className="left-0" />
+                      <CarouselNext className="right-0" />
+                    </Carousel>
+                    <p className="text-center text-sm text-muted-foreground mt-4">
+                      ← Swipe or use arrows to select prize →
+                    </p>
+                  </>
+                )}
               </div>
 
               <div className="flex flex-col gap-2">
@@ -349,9 +379,12 @@ export default function DummySpinPage() {
                       size="lg"
                       onClick={handleSpin}
                       className="text-xl px-12 py-6"
+                      disabled={availablePrizes.length === 0}
                     >
                       <Sparkles className="h-6 w-6 mr-2" />
-                      SPIN
+                      {availablePrizes.length === 0
+                        ? "NO PRIZES AVAILABLE"
+                        : "SPIN"}
                     </Button>
                   </div>
                 )}

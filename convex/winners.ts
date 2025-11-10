@@ -4,6 +4,7 @@ import { v } from "convex/values";
 /**
  * Confirm a winner and save to database
  * Saves denormalized participant and prize data for easy export and data integrity
+ * Also marks the prize as "won" if a prize is assigned
  */
 export const confirmWinner = mutation({
   args: {
@@ -25,10 +26,22 @@ export const confirmWinner = mutation({
 
     if (args.prizeId) {
       const prize = await ctx.db.get(args.prizeId);
-      if (prize) {
-        prizeName = prize.name;
-        prizeImageStorageId = prize.imageStorageId;
+      if (!prize) {
+        throw new Error("Prize not found");
       }
+
+      // Check if prize is already won
+      if (prize.status === "won") {
+        throw new Error("This prize has already been won");
+      }
+
+      prizeName = prize.name;
+      prizeImageStorageId = prize.imageStorageId;
+
+      // Mark prize as won
+      await ctx.db.patch(args.prizeId, {
+        status: "won",
+      });
     }
 
     // Save winner with denormalized data

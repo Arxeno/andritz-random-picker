@@ -28,5 +28,6 @@ export default defineSchema({
   prizes: defineTable({
     name: v.string(),
     imageStorageId: v.optional(v.id("_storage")), // Convex file storage ID
-  }),
+    status: v.union(v.literal("available"), v.literal("won")), // Prize status
+  }).index("by_status", ["status"]),
 });

@@ -7,6 +7,7 @@ export interface DummyPrize {
   id: string;
   name: string;
   imageUrl?: string;
+  status: "available" | "won";
 }
 
 export interface DummyParticipant {
@@ -21,21 +22,25 @@ export const DUMMY_PRIZES: DummyPrize[] = [
     id: "prize-1",
     name: "Bugatti Chiron",
     imageUrl: "/bugatti.png",
+    status: "available",
   },
   {
     id: "prize-2",
     name: "Jam Tangan Rolex 24 Karat",
     imageUrl: "/rolex.png",
+    status: "available",
   },
   {
     id: "prize-3",
     name: "5 Kavling di Menteng",
     imageUrl: "rumah.jpg",
+    status: "available",
   },
   {
     id: "prize-4",
     name: "19 Juta Lapangan Kerja",
     imageUrl: "lapangan-kerja.jpg",
+    status: "available",
   },
 ];
 

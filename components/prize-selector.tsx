@@ -48,7 +48,8 @@ export function PrizeSelector({
     Id<"prizes"> | undefined
   >(undefined);
 
-  const prizes = useQuery(api.prizes.listPrizes);
+  // Fetch only available prizes
+  const prizes = useQuery(api.prizes.listAvailablePrizes);
 
   const handleConfirm = () => {
     onConfirm(selectedPrizeId);
@@ -168,4 +169,3 @@ function PrizeImage({ storageId }: { storageId: Id<"_storage"> }) {
     />
   );
 }
-
