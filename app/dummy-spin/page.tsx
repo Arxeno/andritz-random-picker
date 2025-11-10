@@ -207,7 +207,7 @@ export default function DummySpinPage() {
       <Header />
       <main className="container mx-auto px-4 py-8 max-w-6xl">
         {/* Development Warning Banner */}
-        <div className="mb-6 bg-yellow-50 dark:bg-yellow-900/20 border-2 border-yellow-400 dark:border-yellow-600 rounded-lg p-4">
+        {/* <div className="mb-6 bg-yellow-50 dark:bg-yellow-900/20 border-2 border-yellow-400 dark:border-yellow-600 rounded-lg p-4">
           <div className="flex items-center gap-3">
             <AlertTriangle className="h-6 w-6 text-yellow-600 dark:text-yellow-400 shrink-0" />
             <div>
@@ -221,7 +221,7 @@ export default function DummySpinPage() {
               </p>
             </div>
           </div>
-        </div>
+        </div> */}
 
         {/* Back button */}
         <Button
@@ -259,84 +259,86 @@ export default function DummySpinPage() {
         ) : (
           <>
             {/* Prize Carousel */}
-            <div className="mb-8 max-w-2xl mx-auto">
-              <h2 className="text-2xl font-bold text-center mb-4">
-                Current Prize
-              </h2>
-              <Carousel
-                setApi={setCarouselApi}
-                opts={{
-                  align: "center",
-                  loop: true,
-                }}
-                className="w-[400px] mx-auto"
-              >
-                <CarouselContent>
-                  {prizes.map((prize, index) => (
-                    <CarouselItem
-                      key={prize.id}
-                      className="flex justify-center"
-                    >
-                      <Card className="border-2 border-primary/20 p-0 w-[300px]">
-                        <CardContent>
-                          <div className="flex flex-col items-center gap-2">
-                            {/* Prize Image */}
-                            {prize.imageUrl ? (
-                              <div className="w-fit max-w-sm aspect-square rounded-lg overflow-hidden bg-muted">
-                                <img
-                                  src={prize.imageUrl}
-                                  alt={prize.name}
-                                  className="w-[200px] aspect-square object-contain"
-                                />
-                              </div>
-                            ) : (
-                              <div className="w-full max-w-sm aspect-square rounded-lg bg-muted flex items-center justify-center">
-                                <Gift className="h-24 w-24 text-muted-foreground" />
-                              </div>
-                            )}
+            <div className="flex justify-center gap-6">
+              <div className="max-w-2xl mx-auto">
+                <h2 className="text-2xl font-bold text-center mb-4">
+                  Current Prize
+                </h2>
+                <Carousel
+                  setApi={setCarouselApi}
+                  opts={{
+                    align: "center",
+                    loop: true,
+                  }}
+                  className="w-[400px] mx-auto"
+                >
+                  <CarouselContent>
+                    {prizes.map((prize, index) => (
+                      <CarouselItem
+                        key={prize.id}
+                        className="flex justify-center"
+                      >
+                        <Card className="border-2 border-primary/20 p-0 w-[300px]">
+                          <CardContent>
+                            <div className="flex flex-col items-center gap-2">
+                              {/* Prize Image */}
+                              {prize.imageUrl ? (
+                                <div className="w-fit max-w-sm aspect-square rounded-lg overflow-hidden bg-muted">
+                                  <img
+                                    src={prize.imageUrl}
+                                    alt={prize.name}
+                                    className="w-[200px] aspect-square object-contain"
+                                  />
+                                </div>
+                              ) : (
+                                <div className="w-full max-w-sm aspect-square rounded-lg bg-muted flex items-center justify-center">
+                                  <Gift className="h-24 w-24 text-muted-foreground" />
+                                </div>
+                              )}
 
-                            {/* Prize Name */}
-                            <div className="text-center">
-                              <h3 className="text-2xl font-bold text-primary">
-                                {prize.name}
-                              </h3>
-                              <p className="text-sm text-muted-foreground mt-2">
-                                Prize {index + 1} of {prizes.length}
-                              </p>
+                              {/* Prize Name */}
+                              <div className="text-center">
+                                <h3 className="text-2xl font-bold text-primary">
+                                  {prize.name}
+                                </h3>
+                                <p className="text-sm text-muted-foreground mt-2">
+                                  Prize {index + 1} of {prizes.length}
+                                </p>
+                              </div>
                             </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    </CarouselItem>
-                  ))}
-                </CarouselContent>
-                <CarouselPrevious className="left-0" />
-                <CarouselNext className="right-0" />
-              </Carousel>
-              <p className="text-center text-sm text-muted-foreground mt-4">
-                ← Swipe or use arrows to select prize →
-              </p>
-            </div>
+                          </CardContent>
+                        </Card>
+                      </CarouselItem>
+                    ))}
+                  </CarouselContent>
+                  <CarouselPrevious className="left-0" />
+                  <CarouselNext className="right-0" />
+                </Carousel>
+                <p className="text-center text-sm text-muted-foreground mt-4">
+                  ← Swipe or use arrows to select prize →
+                </p>
+              </div>
 
-            {/* Wheel */}
-            <div className="mb-8">
-              <Wheel
-                participants={participants.map((p) => ({
-                  _id: p.id as any,
-                  fullName: p.fullName,
-                  department: p.department,
-                }))}
-                isSpinning={spinState === "spinning"}
-                winner={
-                  winner
-                    ? {
-                        _id: winner.id as any,
-                        fullName: winner.fullName,
-                        department: winner.department,
-                      }
-                    : null
-                }
-              />
+              {/* Wheel */}
+              <div>
+                <Wheel
+                  participants={participants.map((p) => ({
+                    _id: p.id as any,
+                    fullName: p.fullName,
+                    department: p.department,
+                  }))}
+                  isSpinning={spinState === "spinning"}
+                  winner={
+                    winner
+                      ? {
+                          _id: winner.id as any,
+                          fullName: winner.fullName,
+                          department: winner.department,
+                        }
+                      : null
+                  }
+                />
+              </div>
             </div>
 
             {/* Spin button */}
