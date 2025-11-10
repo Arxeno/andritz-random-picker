@@ -320,50 +320,52 @@ export default function DummySpinPage() {
                 </p>
               </div>
 
-              {/* Wheel */}
-              <div>
-                <Wheel
-                  participants={participants.map((p) => ({
-                    _id: p.id as any,
-                    fullName: p.fullName,
-                    department: p.department,
-                  }))}
-                  isSpinning={spinState === "spinning"}
-                  winner={
-                    winner
-                      ? {
-                          _id: winner.id as any,
-                          fullName: winner.fullName,
-                          department: winner.department,
-                        }
-                      : null
-                  }
-                />
+              <div className="flex flex-col gap-2">
+                {/* Wheel */}
+                <div className="max-w-[500px]">
+                  <Wheel
+                    participants={participants.map((p) => ({
+                      _id: p.id as any,
+                      fullName: p.fullName,
+                      department: p.department,
+                    }))}
+                    isSpinning={spinState === "spinning"}
+                    winner={
+                      winner
+                        ? {
+                            _id: winner.id as any,
+                            fullName: winner.fullName,
+                            department: winner.department,
+                          }
+                        : null
+                    }
+                  />
+                </div>
+
+                {/* Spin button */}
+                {spinState === "idle" && (
+                  <div className="text-center mb-8">
+                    <Button
+                      size="lg"
+                      onClick={handleSpin}
+                      className="text-xl px-12 py-6"
+                    >
+                      <Sparkles className="h-6 w-6 mr-2" />
+                      SPIN
+                    </Button>
+                  </div>
+                )}
+
+                {/* Spinning state */}
+                {spinState === "spinning" && (
+                  <div className="text-center mb-8">
+                    <Button size="lg" disabled className="text-xl px-12 py-6">
+                      Spinning...
+                    </Button>
+                  </div>
+                )}
               </div>
             </div>
-
-            {/* Spin button */}
-            {spinState === "idle" && (
-              <div className="text-center mb-8">
-                <Button
-                  size="lg"
-                  onClick={handleSpin}
-                  className="text-xl px-12 py-6"
-                >
-                  <Sparkles className="h-6 w-6 mr-2" />
-                  SPIN
-                </Button>
-              </div>
-            )}
-
-            {/* Spinning state */}
-            {spinState === "spinning" && (
-              <div className="text-center mb-8">
-                <Button size="lg" disabled className="text-xl px-12 py-6">
-                  Spinning...
-                </Button>
-              </div>
-            )}
           </>
         )}
       </main>
@@ -394,7 +396,7 @@ export default function DummySpinPage() {
 
             <div className="text-center space-y-4 py-4">
               {/* Status message */}
-              {confirmState === "confirmed" ? (
+              {/* {confirmState === "confirmed" ? (
                 <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-3">
                   <p className="text-green-800 dark:text-green-200 font-medium">
                     ✅ Winner confirmed (check console)
@@ -411,7 +413,7 @@ export default function DummySpinPage() {
                     </p>
                   )}
                 </div>
-              )}
+              )} */}
 
               <h2 className="text-4xl font-bold text-primary">
                 {winner.fullName}
