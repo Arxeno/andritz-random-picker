@@ -24,7 +24,7 @@ export const DUMMY_PRIZES: DummyPrize[] = [
   },
   {
     id: "prize-2",
-    name: "Jam Tangan Rolex",
+    name: "Jam Tangan Rolex 24 Karat",
     imageUrl: "/rolex.png",
   },
   {

@@ -269,21 +269,24 @@ export default function DummySpinPage() {
                   align: "center",
                   loop: true,
                 }}
-                className="w-full"
+                className="w-[400px] mx-auto"
               >
                 <CarouselContent>
                   {prizes.map((prize, index) => (
-                    <CarouselItem key={prize.id}>
-                      <Card className="border-2 border-primary/20">
-                        <CardContent className="p-6">
-                          <div className="flex flex-col items-center gap-4">
+                    <CarouselItem
+                      key={prize.id}
+                      className="flex justify-center"
+                    >
+                      <Card className="border-2 border-primary/20 p-0 w-[300px]">
+                        <CardContent>
+                          <div className="flex flex-col items-center gap-2">
                             {/* Prize Image */}
                             {prize.imageUrl ? (
-                              <div className="w-full max-w-sm aspect-square rounded-lg overflow-hidden bg-muted">
+                              <div className="w-fit max-w-sm aspect-square rounded-lg overflow-hidden bg-muted">
                                 <img
                                   src={prize.imageUrl}
                                   alt={prize.name}
-                                  className="w-full h-full object-contain"
+                                  className="w-[200px] aspect-square object-contain"
                                 />
                               </div>
                             ) : (
