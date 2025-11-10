@@ -1,5 +1,6 @@
 import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
+import { Id } from "./_generated/dataModel";
 
 /**
  * Confirm a winner and save to database
@@ -22,7 +23,7 @@ export const confirmWinner = mutation({
 
     // Get prize details if prizeId is provided
     let prizeName: string | undefined;
-    let prizeImageStorageId: string | undefined;
+    let prizeImageStorageId: Id<"_storage"> | undefined;
 
     if (args.prizeId) {
       const prize = await ctx.db.get(args.prizeId);
