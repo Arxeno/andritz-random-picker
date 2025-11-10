@@ -11,6 +11,14 @@ import { Wheel } from "@/components/wheel";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
   ArrowLeft,
   Sparkles,
   RotateCcw,
@@ -34,6 +42,7 @@ export default function DummySpinPage() {
   const [spinCount, setSpinCount] = useState(0);
   const [confirmState, setConfirmState] = useState<ConfirmState>("idle");
   const [selectedPrize, setSelectedPrize] = useState<DummyPrize | null>(null);
+  const [winnerDialogOpen, setWinnerDialogOpen] = useState(false);
   const confettiRef = useRef<CreateTypes | null>(null);
 
   // Use dummy data
@@ -104,6 +113,7 @@ export default function DummySpinPage() {
       setWinner(selectedWinner);
       setSpinState("winner");
       setSpinCount((prev) => prev + 1);
+      setWinnerDialogOpen(true); // Open the dialog
 
       // Fire confetti
       fireConfetti();
@@ -116,6 +126,7 @@ export default function DummySpinPage() {
 
   // Handle re-spin
   const handleRespin = useCallback(() => {
+    setWinnerDialogOpen(false); // Close the dialog
     setSpinState("idle");
     setWinner(null);
     setConfirmState("idle");
@@ -149,6 +160,7 @@ export default function DummySpinPage() {
 
   // Handle spin for next prize
   const handleSpinForNextPrize = useCallback(() => {
+    setWinnerDialogOpen(false); // Close the dialog
     setSpinState("idle");
     setWinner(null);
     setConfirmState("idle");
@@ -257,115 +269,114 @@ export default function DummySpinPage() {
                 </Button>
               </div>
             )}
-
-            {/* Winner display */}
-            {spinState === "winner" && winner && (
-              <Card className="max-w-2xl mx-auto">
-                <CardHeader>
-                  <CardTitle className="text-center text-3xl">
-                    {confirmState === "confirmed" ? (
-                      <>
-                        <Trophy className="inline-block h-8 w-8 mr-2 text-yellow-500" />
-                        Winner Confirmed!
-                        <Trophy className="inline-block h-8 w-8 ml-2 text-yellow-500" />
-                      </>
-                    ) : (
-                      "🎉 Winner Selected! 🎉"
-                    )}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-center space-y-4">
-                    {/* Status message */}
-                    {confirmState === "confirmed" ? (
-                      <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-3 mb-4">
-                        <p className="text-green-800 dark:text-green-200 font-medium">
-                          ✅ Winner confirmed (check console)
-                        </p>
-                      </div>
-                    ) : (
-                      <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-3 mb-4">
-                        <p className="text-yellow-800 dark:text-yellow-200 font-medium">
-                          ⚠️ Winner pending confirmation
-                        </p>
-                        {spinCount > 1 && (
-                          <p className="text-sm text-yellow-700 dark:text-yellow-300 mt-1">
-                            Spin #{spinCount}
-                          </p>
-                        )}
-                      </div>
-                    )}
-
-                    <h2 className="text-4xl font-bold text-primary">
-                      {winner.fullName}
-                    </h2>
-                    <div className="space-y-2 text-lg">
-                      <p>
-                        <span className="font-semibold">Department:</span>{" "}
-                        {winner.department}
-                      </p>
-                      <p>
-                        <span className="font-semibold">ID:</span> {winner.id}
-                      </p>
-                    </div>
-
-                    {/* Action buttons */}
-                    {confirmState === "confirmed" ? (
-                      <div className="flex flex-col sm:flex-row gap-4 justify-center pt-6">
-                        <Button
-                          size="lg"
-                          onClick={handleSpinForNextPrize}
-                          className="w-full sm:w-auto"
-                        >
-                          <Trophy className="h-5 w-5 mr-2" />
-                          Spin for Next Prize
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="lg"
-                          onClick={() => router.push("/")}
-                          className="w-full sm:w-auto"
-                        >
-                          <Home className="h-5 w-5 mr-2" />
-                          Back to Menu
-                        </Button>
-                      </div>
-                    ) : (
-                      <div className="flex gap-4 justify-center pt-6">
-                        <Button
-                          variant="outline"
-                          size="lg"
-                          onClick={handleRespin}
-                          disabled={
-                            spinState === "spinning" ||
-                            confirmState === "saving"
-                          }
-                        >
-                          <RotateCcw className="h-5 w-5 mr-2" />
-                          Re-spin
-                        </Button>
-                        <Button
-                          size="lg"
-                          onClick={handleConfirmWinner}
-                          disabled={
-                            spinState === "spinning" ||
-                            confirmState === "saving"
-                          }
-                        >
-                          <CheckCircle className="h-5 w-5 mr-2" />
-                          {confirmState === "saving"
-                            ? "Saving..."
-                            : "Confirm Winner"}
-                        </Button>
-                      </div>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-            )}
           </>
         )}
       </main>
+
+      {/* Winner Dialog */}
+      {winner && (
+        <Dialog open={winnerDialogOpen} onOpenChange={setWinnerDialogOpen}>
+          <DialogContent className="sm:max-w-[600px]">
+            <DialogHeader>
+              <DialogTitle className="text-center text-3xl">
+                {confirmState === "confirmed" ? (
+                  <>
+                    <Trophy className="inline-block h-8 w-8 mr-2 text-yellow-500" />
+                    Winner Confirmed!
+                    <Trophy className="inline-block h-8 w-8 ml-2 text-yellow-500" />
+                  </>
+                ) : (
+                  "🎉 Winner Selected! 🎉"
+                )}
+              </DialogTitle>
+              <DialogDescription className="text-center">
+                {confirmState === "confirmed"
+                  ? "Winner has been confirmed and logged to console"
+                  : "Congratulations to our lucky winner!"}
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="text-center space-y-4 py-4">
+              {/* Status message */}
+              {confirmState === "confirmed" ? (
+                <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-3">
+                  <p className="text-green-800 dark:text-green-200 font-medium">
+                    ✅ Winner confirmed (check console)
+                  </p>
+                </div>
+              ) : (
+                <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-3">
+                  <p className="text-yellow-800 dark:text-yellow-200 font-medium">
+                    ⚠️ Winner pending confirmation
+                  </p>
+                  {spinCount > 1 && (
+                    <p className="text-sm text-yellow-700 dark:text-yellow-300 mt-1">
+                      Spin #{spinCount}
+                    </p>
+                  )}
+                </div>
+              )}
+
+              <h2 className="text-4xl font-bold text-primary">
+                {winner.fullName}
+              </h2>
+              <div className="space-y-2 text-lg">
+                <p>
+                  <span className="font-semibold">Department:</span>{" "}
+                  {winner.department}
+                </p>
+                <p className="text-sm text-muted-foreground">ID: {winner.id}</p>
+              </div>
+            </div>
+
+            <DialogFooter className="grid grid-cols-2 gap-2 w-full">
+              {confirmState === "confirmed" ? (
+                <>
+                  <Button size="lg" onClick={handleSpinForNextPrize}>
+                    <Trophy className="h-5 w-5 mr-2" />
+                    Spin for Next Prize
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="lg"
+                    onClick={() => {
+                      setWinnerDialogOpen(false);
+                      router.push("/");
+                    }}
+                  >
+                    <Home className="h-5 w-5 mr-2" />
+                    Back to Menu
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button
+                    variant="outline"
+                    size="lg"
+                    onClick={handleRespin}
+                    disabled={
+                      spinState === "spinning" || confirmState === "saving"
+                    }
+                  >
+                    <RotateCcw className="h-5 w-5 mr-2" />
+                    Re-spin
+                  </Button>
+                  <Button
+                    size="lg"
+                    onClick={handleConfirmWinner}
+                    disabled={
+                      spinState === "spinning" || confirmState === "saving"
+                    }
+                  >
+                    <CheckCircle className="h-5 w-5 mr-2" />
+                    {confirmState === "saving" ? "Saving..." : "Confirm Winner"}
+                  </Button>
+                </>
+              )}
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )}
 
       {/* Confetti canvas */}
       <ReactCanvasConfetti
@@ -382,4 +393,3 @@ export default function DummySpinPage() {
     </>
   );
 }
-
