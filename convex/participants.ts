@@ -29,6 +29,51 @@ export const addParticipant = mutation({
 });
 
 /**
+ * Register a participant (public - no auth required)
+ * Checks for duplicates based on name and department
+ */
+export const registerParticipant = mutation({
+  args: {
+    fullName: v.string(),
+    department: v.string(),
+  },
+  handler: async (ctx, args) => {
+    // Validate inputs
+    if (!args.fullName.trim()) {
+      throw new Error("Full name is required");
+    }
+    if (!args.department.trim()) {
+      throw new Error("Department is required");
+    }
+
+    const trimmedName = args.fullName.trim();
+    const trimmedDepartment = args.department.trim();
+
+    // Check for duplicate (same name and department)
+    const allParticipants = await ctx.db.query("participants").collect();
+    const duplicate = allParticipants.find(
+      (p) =>
+        p.fullName.toLowerCase() === trimmedName.toLowerCase() &&
+        p.department.toLowerCase() === trimmedDepartment.toLowerCase(),
+    );
+
+    if (duplicate) {
+      throw new Error(
+        "A participant with this name and department already exists",
+      );
+    }
+
+    // Insert participant
+    const participantId = await ctx.db.insert("participants", {
+      fullName: trimmedName,
+      department: trimmedDepartment,
+    });
+
+    return participantId;
+  },
+});
+
+/**
  * List all participants
  */
 export const listParticipants = query({
