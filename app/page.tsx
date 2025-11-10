@@ -13,15 +13,18 @@ import {
   History,
   Download,
   Gift,
+  QrCode,
 } from "lucide-react";
 
 export default function Home() {
   const stats = useQuery(api.dashboard.getStats);
 
+  const devMode: boolean = true;
+
   return (
-    <>
+    <div className="bg-accent bg-gradient-to-br from-primary/10 via-background to-accent/10 h-screen min-h-screen">
       <Header />
-      <main className="container py-8">
+      <main className="container p-8 mx-auto">
         <div className="space-y-8">
           {/* Dashboard Stats Section */}
           <section>
@@ -68,7 +71,7 @@ export default function Home() {
                 title="Spin the Wheel"
                 description="Select winners with interactive spinning wheel"
                 icon={Disc3}
-                href="/spin"
+                href={devMode ? "/dummy-spin" : "/spin"}
               />
               <NavigationCard
                 title="Winner History"
@@ -82,10 +85,16 @@ export default function Home() {
                 icon={Download}
                 href="/export"
               />
+              <NavigationCard
+                title="QR Code Display"
+                description="Display QR code on projector for participant registration"
+                icon={QrCode}
+                href="/register-qr"
+              />
             </div>
           </section>
         </div>
       </main>
-    </>
+    </div>
   );
 }

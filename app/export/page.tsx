@@ -114,7 +114,7 @@ export default function ExportPage() {
     return (
       <>
         <Header />
-        <main className="container py-8">
+        <main className="container p-8 mx-auto">
           <div className="flex items-center gap-4 mb-6">
             <Button variant="ghost" size="sm" onClick={() => router.push("/")}>
               <ArrowLeft className="h-4 w-4 mr-2" />
@@ -138,7 +138,7 @@ export default function ExportPage() {
     return (
       <>
         <Header />
-        <main className="container py-8">
+        <main className="container p-8 mx-auto">
           <div className="flex items-center gap-4 mb-6">
             <Button variant="ghost" size="sm" onClick={() => router.push("/")}>
               <ArrowLeft className="h-4 w-4 mr-2" />
@@ -184,7 +184,7 @@ export default function ExportPage() {
   return (
     <>
       <Header />
-      <main className="container py-8">
+      <main className="container p-8 mx-auto">
         <div className="flex items-center gap-4 mb-6">
           <Button variant="ghost" size="sm" onClick={() => router.push("/")}>
             <ArrowLeft className="h-4 w-4 mr-2" />

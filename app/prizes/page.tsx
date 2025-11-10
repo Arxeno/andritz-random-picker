@@ -98,7 +98,7 @@ export default function PrizesPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 dark:from-gray-900 dark:via-purple-900/20 dark:to-blue-900/20 p-8">
+    <div className="min-h-screen p-8 mx-auto">
       <div className="max-w-6xl mx-auto space-y-8">
         {/* Header */}
         <div className="flex items-center justify-between">
@@ -144,7 +144,7 @@ export default function PrizesPage() {
 
           {/* Prize Statistics */}
           <div className="space-y-4">
-            <div className="bg-white dark:bg-gray-800 rounded-lg p-6 border shadow-sm">
+            <div className="bg-white rounded-lg p-6 border shadow-sm">
               <h3 className="text-lg font-semibold mb-4">Prize Statistics</h3>
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
@@ -160,8 +160,8 @@ export default function PrizesPage() {
               </div>
             </div>
 
-            <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
-              <p className="text-sm text-blue-800 dark:text-blue-200">
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+              <p className="text-sm text-blue-800">
                 💡 <strong>Tip:</strong> Add images to make your prizes more
                 attractive! Images will be displayed when winners are announced.
               </p>
@@ -182,4 +182,3 @@ export default function PrizesPage() {
     </div>
   );
 }
-

@@ -133,7 +133,7 @@ export default function ParticipantsPage() {
   return (
     <>
       <Header />
-      <main className="container py-8 max-w-7xl">
+      <main className="container mx-auto p-8 max-w-7xl">
         {/* Header */}
         <div className="flex items-center gap-4 mb-6">
           <Button variant="ghost" onClick={() => router.push("/")}>

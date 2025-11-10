@@ -14,6 +14,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { AlertCircle } from "lucide-react";
+import Image from "next/image";
 
 export default function SignIn() {
   const { signIn } = useAuthActions();
@@ -22,10 +23,18 @@ export default function SignIn() {
   const router = useRouter();
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-muted/40 p-4">
+    <div className="flex min-h-screen items-center justify-center bg-accent bg-gradient-to-br from-primary/10 via-background to-accent/10 p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-bold text-center">
+          <div className="w-full flex justify-center">
+            <Image
+              src={"/logo.svg"}
+              alt="Doorprize Manager"
+              width={200}
+              height={32}
+            />
+          </div>
+          <CardTitle className="text-xl font-bold text-center">
             Doorprize Manager
           </CardTitle>
           <CardDescription className="text-center">Admin Login</CardDescription>
