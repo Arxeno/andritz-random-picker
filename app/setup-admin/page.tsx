@@ -49,10 +49,7 @@ export default function SetupAdmin() {
               <CheckCircle2 className="h-4 w-4 text-green-600" />
               <p>The admin account has already been created.</p>
             </div>
-            <Button
-              onClick={() => router.push("/signin")}
-              className="w-full"
-            >
+            <Button onClick={() => router.push("/signin")} className="w-full">
               Go to Sign In
             </Button>
           </CardContent>
@@ -78,10 +75,7 @@ export default function SetupAdmin() {
               <CheckCircle2 className="h-4 w-4" />
               <p>Admin account created successfully.</p>
             </div>
-            <Button
-              onClick={() => router.push("/signin")}
-              className="w-full"
-            >
+            <Button onClick={() => router.push("/signin")} className="w-full">
               Go to Sign In
             </Button>
           </CardContent>
@@ -133,7 +127,7 @@ export default function SetupAdmin() {
                 name="email"
                 type="email"
                 placeholder="admin@doorprize.local"
-                defaultValue="admin@doorprize.local"
+                defaultValue="admin@t.c"
                 required
                 disabled={isLoading}
               />
@@ -145,7 +139,7 @@ export default function SetupAdmin() {
                 name="password"
                 type="password"
                 placeholder="Enter a strong password"
-                defaultValue="DoorprizeAdmin2025!"
+                defaultValue="123456"
                 required
                 disabled={isLoading}
               />
@@ -169,4 +163,3 @@ export default function SetupAdmin() {
     </div>
   );
 }
-

@@ -19,6 +19,9 @@ export default defineSchema({
     participantId: v.id("participants"),
     participantName: v.string(), // Denormalized for easy export
     participantDepartment: v.string(), // Denormalized for easy export
+    prizeId: v.optional(v.id("prizes")), // Optional prize assignment
+    prizeName: v.optional(v.string()), // Denormalized prize name
+    prizeImageStorageId: v.optional(v.id("_storage")), // Denormalized prize image
   }).index("by_participant", ["participantId"]),
 
   // Prizes table - stores prize information with images

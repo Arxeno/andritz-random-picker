@@ -11,13 +11,17 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Search } from "lucide-react";
+import { Search, Gift, Image as ImageIcon } from "lucide-react";
 import { Id } from "@/convex/_generated/dataModel";
+import { useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
 
 interface Winner {
   _id: Id<"winners">;
   participantName: string;
   participantDepartment: string;
+  prizeName?: string;
+  prizeImageStorageId?: Id<"_storage">;
   _creationTime: number;
 }
 
@@ -51,7 +55,9 @@ export function WinnerTable({ winners }: WinnerTableProps) {
     return winners.filter(
       (winner) =>
         winner.participantName.toLowerCase().includes(lowerSearch) ||
-        winner.participantDepartment.toLowerCase().includes(lowerSearch),
+        winner.participantDepartment.toLowerCase().includes(lowerSearch) ||
+        (winner.prizeName &&
+          winner.prizeName.toLowerCase().includes(lowerSearch)),
     );
   }, [winners, searchTerm]);
 
@@ -63,7 +69,7 @@ export function WinnerTable({ winners }: WinnerTableProps) {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
             type="text"
-            placeholder="Search by name or department..."
+            placeholder="Search by name, department, or prize..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="pl-10"
@@ -100,6 +106,7 @@ export function WinnerTable({ winners }: WinnerTableProps) {
                   <TableRow>
                     <TableHead className="w-[200px]">Winner Name</TableHead>
                     <TableHead className="w-[200px]">Department</TableHead>
+                    <TableHead className="w-[250px]">Prize</TableHead>
                     <TableHead className="w-[200px]">Date/Time Won</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -110,6 +117,26 @@ export function WinnerTable({ winners }: WinnerTableProps) {
                         {winner.participantName}
                       </TableCell>
                       <TableCell>{winner.participantDepartment}</TableCell>
+                      <TableCell>
+                        {winner.prizeName ? (
+                          <div className="flex items-center gap-2">
+                            {winner.prizeImageStorageId ? (
+                              <PrizeImage
+                                storageId={winner.prizeImageStorageId}
+                              />
+                            ) : (
+                              <div className="w-8 h-8 bg-muted rounded flex items-center justify-center shrink-0">
+                                <Gift className="h-4 w-4 text-muted-foreground" />
+                              </div>
+                            )}
+                            <span className="text-sm">{winner.prizeName}</span>
+                          </div>
+                        ) : (
+                          <span className="text-sm text-muted-foreground">
+                            No prize assigned
+                          </span>
+                        )}
+                      </TableCell>
                       <TableCell className="text-muted-foreground">
                         {formatTimestamp(winner._creationTime)}
                       </TableCell>
@@ -131,5 +158,22 @@ export function WinnerTable({ winners }: WinnerTableProps) {
         </Card>
       )}
     </div>
+  );
+}
+
+// Component to display prize image from Convex storage
+function PrizeImage({ storageId }: { storageId: Id<"_storage"> }) {
+  const imageUrl = useQuery(api.files.getUrl, { storageId });
+
+  if (!imageUrl) {
+    return <div className="w-8 h-8 bg-muted rounded animate-pulse shrink-0" />;
+  }
+
+  return (
+    <img
+      src={imageUrl}
+      alt="Prize"
+      className="w-8 h-8 object-cover rounded border shrink-0"
+    />
   );
 }

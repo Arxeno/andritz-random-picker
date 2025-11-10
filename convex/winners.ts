@@ -3,11 +3,12 @@ import { v } from "convex/values";
 
 /**
  * Confirm a winner and save to database
- * Saves denormalized participant data for easy export and data integrity
+ * Saves denormalized participant and prize data for easy export and data integrity
  */
 export const confirmWinner = mutation({
   args: {
     participantId: v.id("participants"),
+    prizeId: v.optional(v.id("prizes")),
   },
   returns: v.id("winners"),
   handler: async (ctx, args) => {
@@ -18,11 +19,26 @@ export const confirmWinner = mutation({
       throw new Error("Participant not found");
     }
 
+    // Get prize details if prizeId is provided
+    let prizeName: string | undefined;
+    let prizeImageStorageId: string | undefined;
+
+    if (args.prizeId) {
+      const prize = await ctx.db.get(args.prizeId);
+      if (prize) {
+        prizeName = prize.name;
+        prizeImageStorageId = prize.imageStorageId;
+      }
+    }
+
     // Save winner with denormalized data
     const winnerId = await ctx.db.insert("winners", {
       participantId: args.participantId,
       participantName: participant.fullName,
       participantDepartment: participant.department,
+      prizeId: args.prizeId,
+      prizeName,
+      prizeImageStorageId,
     });
 
     return winnerId;
