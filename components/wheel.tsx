@@ -23,8 +23,8 @@ export function Wheel({
 }: WheelProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [rotation, setRotation] = useState(0);
-  const animationRef = useRef<number>();
-  const startTimeRef = useRef<number>();
+  const animationRef = useRef<number | undefined>(undefined);
+  const startTimeRef = useRef<number | undefined>(undefined);
   const targetRotationRef = useRef<number>(0);
   const selectedIndexRef = useRef<number>(0);
 

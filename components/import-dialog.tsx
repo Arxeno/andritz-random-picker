@@ -261,7 +261,7 @@ export function ImportDialog({
                 <ul className="text-sm text-green-800 space-y-1">
                   {importedData.slice(0, 10).map((p, index) => (
                     <li key={index}>
-                      {p.fullName} ({p.email})
+                      {p.fullName} ({p.department})
                     </li>
                   ))}
                   {importedData.length > 10 && (
