@@ -11,7 +11,6 @@ import { Header } from "@/components/header";
 import { Wheel } from "@/components/wheel";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { WHEEL_CONFIG } from "@/lib/config";
 import {
   Dialog,
   DialogContent,
@@ -35,7 +34,6 @@ import {
   CheckCircle,
   Trophy,
   Home,
-  History,
   AlertTriangle,
   Gift,
 } from "lucide-react";
@@ -128,6 +126,29 @@ export default function DummySpinPage() {
     }, 250);
   }, []);
 
+  // Handle spin complete (called by Wheel component)
+  const handleSpinComplete = useCallback(
+    (selectedWinner: { _id: any; fullName: string; department: string }) => {
+      // Find the original dummy participant by matching fullName
+      const dummyWinner = participants.find(
+        (p) => p.fullName === selectedWinner.fullName,
+      );
+
+      if (dummyWinner) {
+        setWinner(dummyWinner);
+        setSpinState("winner");
+        setSpinCount((prev) => prev + 1);
+        setWinnerDialogOpen(true);
+        fireConfetti();
+
+        toast.success("Winner selected! 🎉", {
+          description: `${dummyWinner.fullName} from ${dummyWinner.department}`,
+        });
+      }
+    },
+    [participants, fireConfetti],
+  );
+
   // Handle spin
   const handleSpin = useCallback(() => {
     if (participants.length === 0) {
@@ -139,29 +160,7 @@ export default function DummySpinPage() {
 
     setSpinState("spinning");
     setConfirmState("idle");
-
-    // Simulate spinning delay
-    setTimeout(() => {
-      // Randomly select a winner using crypto.getRandomValues for fairness
-      const randomIndex = Math.floor(
-        (crypto.getRandomValues(new Uint32Array(1))[0] / 0xffffffff) *
-          participants.length,
-      );
-      const selectedWinner = participants[randomIndex];
-
-      setWinner(selectedWinner);
-      setSpinState("winner");
-      setSpinCount((prev) => prev + 1);
-      setWinnerDialogOpen(true); // Open the dialog
-
-      // Fire confetti
-      fireConfetti();
-
-      toast.success("Winner selected! 🎉", {
-        description: `${selectedWinner.fullName} from ${selectedWinner.department}`,
-      });
-    }, WHEEL_CONFIG.SPIN_DURATION);
-  }, [participants, fireConfetti]);
+  }, [participants]);
 
   // Handle re-spin
   const handleRespin = useCallback(() => {
@@ -361,15 +360,7 @@ export default function DummySpinPage() {
                       department: p.department,
                     }))}
                     isSpinning={spinState === "spinning"}
-                    winner={
-                      winner
-                        ? {
-                            _id: winner.id as any,
-                            fullName: winner.fullName,
-                            department: winner.department,
-                          }
-                        : null
-                    }
+                    onSpinComplete={handleSpinComplete}
                   />
                 </div>
 

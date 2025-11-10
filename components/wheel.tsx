@@ -7,8 +7,7 @@ import { WHEEL_CONFIG, UI_CONFIG } from "@/lib/config";
 interface Participant {
   _id: Id<"participants">;
   fullName: string;
-  email: string;
-  phone: string;
+  department: string;
 }
 
 interface WheelProps {

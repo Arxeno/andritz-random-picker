@@ -1,17 +1,31 @@
 "use client";
 
-import { useState, useCallback, useRef, useEffect } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useQuery, useMutation } from "convex/react";
 import { useRouter } from "next/navigation";
-import ReactCanvasConfetti from "react-canvas-confetti";
-import type { CreateTypes } from "canvas-confetti";
+import Fireworks from "react-canvas-confetti/dist/presets/fireworks";
 import { toast } from "sonner";
 
 import { Header } from "@/components/header";
 import { Wheel } from "@/components/wheel";
-import { PrizeSelector } from "@/components/prize-selector";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+  type CarouselApi,
+} from "@/components/ui/carousel";
 import {
   ArrowLeft,
   Sparkles,
@@ -19,7 +33,8 @@ import {
   CheckCircle,
   Trophy,
   Home,
-  History,
+  AlertTriangle,
+  Gift,
 } from "lucide-react";
 
 import { api } from "@/convex/_generated/api";
@@ -28,8 +43,14 @@ import { Id } from "@/convex/_generated/dataModel";
 interface Participant {
   _id: Id<"participants">;
   fullName: string;
-  email: string;
-  phone: string;
+  department: string;
+}
+
+interface Prize {
+  _id: Id<"prizes">;
+  name: string;
+  imageStorageId?: Id<"_storage">;
+  status: "available" | "won";
 }
 
 type SpinState = "idle" | "spinning" | "winner";
@@ -41,107 +62,88 @@ export default function SpinPage() {
   const [winner, setWinner] = useState<Participant | null>(null);
   const [spinCount, setSpinCount] = useState(0);
   const [confirmState, setConfirmState] = useState<ConfirmState>("idle");
-  const [prizeSelectorOpen, setPrizeSelectorOpen] = useState(false);
-  const confettiRef = useRef<CreateTypes | null>(null);
+  const [selectedPrize, setSelectedPrize] = useState<Prize | null>(null);
+  const [winnerDialogOpen, setWinnerDialogOpen] = useState(false);
+  const [carouselApi, setCarouselApi] = useState<CarouselApi>();
+  const [currentPrizeIndex, setCurrentPrizeIndex] = useState(0);
 
-  // Fetch participants
+  // Fetch participants and prizes
   const participants = useQuery(api.spin.getEligibleParticipants);
   const participantCount = useQuery(api.spin.getParticipantCount);
+  const availablePrizes = useQuery(api.prizes.listAvailablePrizes);
 
   // Mutation to confirm winner
   const confirmWinnerMutation = useMutation(api.winners.confirmWinner);
 
-  // Confetti instance
-  const getInstance = useCallback((instance: CreateTypes | null) => {
-    confettiRef.current = instance;
-  }, []);
+  // Track carousel selection
+  useEffect(() => {
+    if (!carouselApi) return;
 
-  // Fire confetti
-  const fireConfetti = useCallback(() => {
-    if (!confettiRef.current) return;
-
-    const duration = 3000;
-    const animationEnd = Date.now() + duration;
-
-    const randomInRange = (min: number, max: number) => {
-      return Math.random() * (max - min) + min;
+    const onSelect = () => {
+      setCurrentPrizeIndex(carouselApi.selectedScrollSnap());
     };
 
-    const interval = setInterval(() => {
-      const timeLeft = animationEnd - Date.now();
+    carouselApi.on("select", onSelect);
+    onSelect(); // Set initial index
 
-      if (timeLeft <= 0) {
-        clearInterval(interval);
-        return;
-      }
+    return () => {
+      carouselApi.off("select", onSelect);
+    };
+  }, [carouselApi]);
 
-      const particleCount = 50 * (timeLeft / duration);
+  // Update selected prize when carousel changes
+  useEffect(() => {
+    if (availablePrizes && availablePrizes.length > 0) {
+      setSelectedPrize(availablePrizes[currentPrizeIndex]);
+    }
+  }, [currentPrizeIndex, availablePrizes]);
 
-      confettiRef.current?.({
-        particleCount,
-        startVelocity: 30,
-        spread: 360,
-        ticks: 60,
-        origin: {
-          x: randomInRange(0.1, 0.3),
-          y: Math.random() - 0.2,
-        },
-      });
+  // Handle spin complete (called by Wheel component)
+  const handleSpinComplete = useCallback((selectedWinner: Participant) => {
+    setWinner(selectedWinner);
+    setSpinState("winner");
+    setSpinCount((prev) => prev + 1);
+    setWinnerDialogOpen(true);
 
-      confettiRef.current?.({
-        particleCount,
-        startVelocity: 30,
-        spread: 360,
-        ticks: 60,
-        origin: {
-          x: randomInRange(0.7, 0.9),
-          y: Math.random() - 0.2,
-        },
-      });
-    }, 250);
+    toast.success("Winner selected! 🎉", {
+      description: `${selectedWinner.fullName} from ${selectedWinner.department}`,
+    });
   }, []);
 
-  // Handle spin button click
-  const handleSpin = () => {
-    if (!participants || participants.length === 0) return;
-    setSpinState("spinning");
-    setWinner(null);
-    setSpinCount((prev) => prev + 1);
-  };
+  // Handle spin
+  const handleSpin = useCallback(() => {
+    if (!participants || participants.length === 0) {
+      toast.error("No participants available", {
+        description: "Please add participants first.",
+      });
+      return;
+    }
 
-  // Handle spin complete
-  const handleSpinComplete = useCallback(
-    (selectedWinner: Participant) => {
-      setWinner(selectedWinner);
-      setSpinState("winner");
-      fireConfetti();
-    },
-    [fireConfetti],
-  );
+    setSpinState("spinning");
+    setConfirmState("idle");
+  }, [participants]);
 
   // Handle re-spin
-  const handleRespin = () => {
-    setSpinState("spinning");
+  const handleRespin = useCallback(() => {
+    setWinnerDialogOpen(false);
+    setSpinState("idle");
     setWinner(null);
-    setSpinCount((prev) => prev + 1);
-  };
+    setConfirmState("idle");
+    toast.info("Ready to spin again", {
+      description: "Click SPIN to select a new winner.",
+    });
+  }, []);
 
-  // Handle confirm winner button click - opens prize selector
-  const handleConfirmWinnerClick = () => {
-    setPrizeSelectorOpen(true);
-  };
-
-  // Handle confirm winner with prize selection
-  const handleConfirmWinner = async (prizeId?: Id<"prizes">) => {
+  // Handle confirm winner
+  const handleConfirmWinner = useCallback(async () => {
     if (!winner) return;
 
-    setPrizeSelectorOpen(false);
     setConfirmState("saving");
 
     try {
       await confirmWinnerMutation({
         participantId: winner._id,
-        prizeId,
+        prizeId: selectedPrize?._id,
       });
       setConfirmState("confirmed");
       toast.success("Winner confirmed! 🎉", {
@@ -154,15 +156,19 @@ export default function SpinPage() {
         description: "Please try again.",
       });
     }
-  };
+  }, [winner, selectedPrize, confirmWinnerMutation]);
 
   // Handle spin for next prize
-  const handleSpinForNextPrize = () => {
+  const handleSpinForNextPrize = useCallback(() => {
+    setWinnerDialogOpen(false);
     setSpinState("idle");
     setWinner(null);
-    setSpinCount(0);
     setConfirmState("idle");
-  };
+    setSelectedPrize(null);
+    toast.info("Ready for next prize", {
+      description: "Click SPIN to select the next winner.",
+    });
+  }, []);
 
   // Loading state
   if (participants === undefined || participantCount === undefined) {
@@ -227,180 +233,211 @@ export default function SpinPage() {
           </Card>
         ) : (
           <>
-            {/* Wheel */}
-            <div className="mb-8">
-              <Wheel
-                participants={participants}
-                isSpinning={spinState === "spinning"}
-                onSpinComplete={handleSpinComplete}
-              />
-            </div>
-
-            {/* Spin button */}
-            {spinState === "idle" && (
-              <div className="text-center mb-8">
-                <Button
-                  size="lg"
-                  onClick={handleSpin}
-                  disabled={hasNoParticipants}
-                  className="text-xl px-12 py-6"
-                >
-                  <Sparkles className="h-6 w-6 mr-2" />
-                  SPIN
-                </Button>
-              </div>
-            )}
-
-            {/* Spinning state */}
-            {spinState === "spinning" && (
-              <div className="text-center mb-8">
-                <Button size="lg" disabled className="text-xl px-12 py-6">
-                  Spinning...
-                </Button>
-              </div>
-            )}
-
-            {/* Winner display */}
-            {spinState === "winner" && winner && (
-              <Card className="max-w-2xl mx-auto">
-                <CardHeader>
-                  <CardTitle className="text-center text-3xl">
-                    {confirmState === "confirmed" ? (
-                      <>
-                        <Trophy className="inline-block h-8 w-8 mr-2 text-yellow-500" />
-                        Winner Confirmed!
-                        <Trophy className="inline-block h-8 w-8 ml-2 text-yellow-500" />
-                      </>
-                    ) : (
-                      "🎉 Winner Selected! 🎉"
-                    )}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-center space-y-4">
-                    {/* Status message */}
-                    {confirmState === "confirmed" ? (
-                      <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-3 mb-4">
-                        <p className="text-green-800 dark:text-green-200 font-medium">
-                          ✅ Winner confirmed and saved!
-                        </p>
-                      </div>
-                    ) : (
-                      <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-3 mb-4">
-                        <p className="text-yellow-800 dark:text-yellow-200 font-medium">
-                          ⚠️ Winner pending confirmation
-                        </p>
-                        {spinCount > 1 && (
-                          <p className="text-sm text-yellow-700 dark:text-yellow-300 mt-1">
-                            Spin #{spinCount}
-                          </p>
-                        )}
-                      </div>
-                    )}
-
-                    <h2 className="text-4xl font-bold text-primary">
-                      {winner.fullName}
-                    </h2>
-                    <div className="space-y-2 text-lg">
-                      <p>
-                        <span className="font-semibold">Email:</span>{" "}
-                        {winner.email}
+            {/* Prize Carousel and Wheel */}
+            <div className="flex justify-center gap-6">
+              {/* Prize Carousel */}
+              <div className="max-w-2xl mx-auto">
+                <h2 className="text-2xl font-bold text-center mb-4">
+                  Current Prize
+                </h2>
+                {!availablePrizes || availablePrizes.length === 0 ? (
+                  <Card className="border-2 border-yellow-500/50 p-6 w-[400px] mx-auto">
+                    <CardContent className="text-center space-y-4">
+                      <AlertTriangle className="h-16 w-16 mx-auto text-yellow-500" />
+                      <h3 className="text-xl font-bold">All Prizes Won!</h3>
+                      <p className="text-muted-foreground">
+                        All prizes have been distributed. No more prizes
+                        available for spinning.
                       </p>
-                      <p>
-                        <span className="font-semibold">Phone:</span>{" "}
-                        {winner.phone}
-                      </p>
-                    </div>
+                    </CardContent>
+                  </Card>
+                ) : (
+                  <>
+                    <Carousel
+                      setApi={setCarouselApi}
+                      opts={{
+                        align: "center",
+                        loop: true,
+                      }}
+                      className="w-[400px] mx-auto"
+                    >
+                      <CarouselContent>
+                        {availablePrizes.map((prize, index) => (
+                          <CarouselItem
+                            key={prize._id}
+                            className="flex justify-center"
+                          >
+                            <Card className="border-2 border-primary/20 p-0 w-[300px]">
+                              <CardContent>
+                                <div className="flex flex-col items-center gap-2">
+                                  {/* Prize Image */}
+                                  {prize.imageStorageId ? (
+                                    <div className="w-fit max-w-sm aspect-square rounded-lg overflow-hidden bg-muted">
+                                      <img
+                                        src={`${process.env.NEXT_PUBLIC_CONVEX_URL}/api/storage/${prize.imageStorageId}`}
+                                        alt={prize.name}
+                                        className="w-[200px] aspect-square object-contain"
+                                      />
+                                    </div>
+                                  ) : (
+                                    <div className="w-full max-w-sm aspect-square rounded-lg bg-muted flex items-center justify-center">
+                                      <Gift className="h-24 w-24 text-muted-foreground" />
+                                    </div>
+                                  )}
 
-                    {/* Action buttons */}
-                    {confirmState === "confirmed" ? (
-                      <div className="flex flex-col sm:flex-row gap-4 justify-center pt-6">
-                        <Button
-                          size="lg"
-                          onClick={handleSpinForNextPrize}
-                          className="w-full sm:w-auto"
-                        >
-                          <Trophy className="h-5 w-5 mr-2" />
-                          Spin for Next Prize
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="lg"
-                          onClick={() => router.push("/winners")}
-                          className="w-full sm:w-auto"
-                        >
-                          <History className="h-5 w-5 mr-2" />
-                          View Winner History
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="lg"
-                          onClick={() => router.push("/")}
-                          className="w-full sm:w-auto"
-                        >
-                          <Home className="h-5 w-5 mr-2" />
-                          Back to Menu
-                        </Button>
-                      </div>
-                    ) : (
-                      <div className="flex gap-4 justify-center pt-6">
-                        <Button
-                          variant="outline"
-                          size="lg"
-                          onClick={handleRespin}
-                          disabled={
-                            spinState === "spinning" ||
-                            confirmState === "saving"
-                          }
-                        >
-                          <RotateCcw className="h-5 w-5 mr-2" />
-                          Re-spin
-                        </Button>
-                        <Button
-                          size="lg"
-                          onClick={handleConfirmWinnerClick}
-                          disabled={
-                            spinState === "spinning" ||
-                            confirmState === "saving"
-                          }
-                        >
-                          <CheckCircle className="h-5 w-5 mr-2" />
-                          {confirmState === "saving"
-                            ? "Saving..."
-                            : "Confirm Winner"}
-                        </Button>
-                      </div>
-                    )}
+                                  {/* Prize Name */}
+                                  <div className="text-center">
+                                    <h3 className="text-2xl font-bold text-primary">
+                                      {prize.name}
+                                    </h3>
+                                    <p className="text-sm text-muted-foreground mt-2">
+                                      Prize {index + 1} of{" "}
+                                      {availablePrizes.length}
+                                    </p>
+                                  </div>
+                                </div>
+                              </CardContent>
+                            </Card>
+                          </CarouselItem>
+                        ))}
+                      </CarouselContent>
+                      <CarouselPrevious className="left-0" />
+                      <CarouselNext className="right-0" />
+                    </Carousel>
+                    <p className="text-center text-sm text-muted-foreground mt-4">
+                      ← Swipe or use arrows to select prize →
+                    </p>
+                  </>
+                )}
+              </div>
+
+              {/* Wheel and Spin Button */}
+              <div className="flex flex-col gap-2">
+                {/* Wheel */}
+                <div className="max-w-[500px]">
+                  <Wheel
+                    participants={participants}
+                    isSpinning={spinState === "spinning"}
+                    onSpinComplete={handleSpinComplete}
+                  />
+                </div>
+
+                {/* Spin button */}
+                {spinState === "idle" && (
+                  <div className="text-center mb-8">
+                    <Button
+                      size="lg"
+                      onClick={handleSpin}
+                      className="text-xl px-12 py-6"
+                      disabled={
+                        !availablePrizes || availablePrizes.length === 0
+                      }
+                    >
+                      <Sparkles className="h-6 w-6 mr-2" />
+                      {!availablePrizes || availablePrizes.length === 0
+                        ? "NO PRIZES AVAILABLE"
+                        : "SPIN"}
+                    </Button>
                   </div>
-                </CardContent>
-              </Card>
-            )}
+                )}
+
+                {/* Spinning state */}
+                {spinState === "spinning" && (
+                  <div className="text-center mb-8">
+                    <Button size="lg" disabled className="text-xl px-12 py-6">
+                      Spinning...
+                    </Button>
+                  </div>
+                )}
+              </div>
+            </div>
           </>
         )}
       </main>
 
-      {/* Confetti canvas */}
-      <ReactCanvasConfetti
-        onInit={getInstance}
-        style={{
-          position: "fixed",
-          pointerEvents: "none",
-          width: "100%",
-          height: "100%",
-          top: 0,
-          left: 0,
-        }}
-      />
-
-      {/* Prize Selector Dialog */}
+      {/* Winner Dialog */}
       {winner && (
-        <PrizeSelector
-          open={prizeSelectorOpen}
-          onOpenChange={setPrizeSelectorOpen}
-          onConfirm={handleConfirmWinner}
-          winnerName={winner.fullName}
-          isLoading={confirmState === "saving"}
-        />
+        <Dialog open={winnerDialogOpen} onOpenChange={setWinnerDialogOpen}>
+          <Fireworks autorun={{ speed: 3 }} />
+          <DialogContent className="sm:max-w-[600px]">
+            <DialogHeader>
+              <DialogTitle className="text-center text-3xl">
+                {confirmState === "confirmed" ? (
+                  <>
+                    <Trophy className="inline-block h-8 w-8 mr-2 text-yellow-500" />
+                    Winner Confirmed!
+                    <Trophy className="inline-block h-8 w-8 ml-2 text-yellow-500" />
+                  </>
+                ) : (
+                  "🎉 Winner Selected! 🎉"
+                )}
+              </DialogTitle>
+              <DialogDescription className="text-center">
+                {confirmState === "confirmed"
+                  ? "Winner has been confirmed and saved to the database"
+                  : "Congratulations to our lucky winner!"}
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="text-center space-y-4 py-4">
+              <h2 className="text-4xl font-bold text-primary">
+                {winner.fullName}
+              </h2>
+              <div className="space-y-2 text-lg">
+                <p>
+                  <span className="font-semibold">Department:</span>{" "}
+                  {winner.department}
+                </p>
+              </div>
+            </div>
+
+            <DialogFooter className="grid grid-cols-2 gap-2 w-full">
+              {confirmState === "confirmed" ? (
+                <>
+                  <Button size="lg" onClick={handleSpinForNextPrize}>
+                    <Trophy className="h-5 w-5 mr-2" />
+                    Spin for Next Prize
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="lg"
+                    onClick={() => {
+                      setWinnerDialogOpen(false);
+                      router.push("/");
+                    }}
+                  >
+                    <Home className="h-5 w-5 mr-2" />
+                    Back to Menu
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button
+                    variant="outline"
+                    size="lg"
+                    onClick={handleRespin}
+                    disabled={
+                      spinState === "spinning" || confirmState === "saving"
+                    }
+                  >
+                    <RotateCcw className="h-5 w-5 mr-2" />
+                    Re-spin
+                  </Button>
+                  <Button
+                    size="lg"
+                    onClick={handleConfirmWinner}
+                    disabled={
+                      spinState === "spinning" || confirmState === "saving"
+                    }
+                  >
+                    <CheckCircle className="h-5 w-5 mr-2" />
+                    {confirmState === "saving" ? "Saving..." : "Confirm Winner"}
+                  </Button>
+                </>
+              )}
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       )}
     </>
   );
