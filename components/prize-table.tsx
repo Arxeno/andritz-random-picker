@@ -112,7 +112,7 @@ export function PrizeTable({ prizes, onEdit, onDelete }: PrizeTableProps) {
                       {prize.status === "won" ? (
                         <Badge
                           variant="secondary"
-                          className="bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
+                          className="bg-secondary text-secondary-foreground"
                         >
                           <Trophy className="h-3 w-3 mr-1" />
                           Won
@@ -120,7 +120,7 @@ export function PrizeTable({ prizes, onEdit, onDelete }: PrizeTableProps) {
                       ) : (
                         <Badge
                           variant="outline"
-                          className="bg-green-50 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800"
+                          className="bg-accent/10 text-accent-foreground border-accent"
                         >
                           <CheckCircle className="h-3 w-3 mr-1" />
                           Available

@@ -11,6 +11,7 @@ import { Header } from "@/components/header";
 import { Wheel } from "@/components/wheel";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { WHEEL_CONFIG } from "@/lib/config";
 import {
   Dialog,
   DialogContent,
@@ -159,7 +160,7 @@ export default function DummySpinPage() {
       toast.success("Winner selected! 🎉", {
         description: `${selectedWinner.fullName} from ${selectedWinner.department}`,
       });
-    }, 3000); // 3 second spin duration
+    }, WHEEL_CONFIG.SPIN_DURATION);
   }, [participants, fireConfetti]);
 
   // Handle re-spin

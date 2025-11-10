@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Id } from "@/convex/_generated/dataModel";
+import { WHEEL_CONFIG, UI_CONFIG } from "@/lib/config";
 
 interface Participant {
   _id: Id<"participants">;
@@ -16,19 +17,11 @@ interface WheelProps {
   onSpinComplete: (winner: Participant) => void;
 }
 
-// Wheel colors - alternating for visual distinction
-const COLORS = [
-  "#FF6B6B", // Red
-  "#4ECDC4", // Teal
-  "#45B7D1", // Blue
-  "#FFA07A", // Light Salmon
-  "#98D8C8", // Mint
-  "#F7DC6F", // Yellow
-  "#BB8FCE", // Purple
-  "#85C1E2", // Sky Blue
-];
-
-export function Wheel({ participants, isSpinning, onSpinComplete }: WheelProps) {
+export function Wheel({
+  participants,
+  isSpinning,
+  onSpinComplete,
+}: WheelProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [rotation, setRotation] = useState(0);
   const animationRef = useRef<number>();
@@ -72,7 +65,7 @@ export function Wheel({ participants, isSpinning, onSpinComplete }: WheelProps) 
       ctx.closePath();
 
       // Fill with color
-      ctx.fillStyle = COLORS[index % COLORS.length];
+      ctx.fillStyle = WHEEL_CONFIG.COLORS[index % WHEEL_CONFIG.COLORS.length];
       ctx.fill();
 
       // Draw border
@@ -91,8 +84,9 @@ export function Wheel({ participants, isSpinning, onSpinComplete }: WheelProps) 
 
       // Truncate long names
       let displayName = participant.fullName;
-      if (displayName.length > 15) {
-        displayName = displayName.substring(0, 12) + "...";
+      if (displayName.length > UI_CONFIG.MAX_NAME_LENGTH_ON_WHEEL) {
+        displayName =
+          displayName.substring(0, UI_CONFIG.TRUNCATED_NAME_LENGTH) + "...";
       }
 
       ctx.fillText(displayName, radius - 10, 5);
@@ -135,7 +129,7 @@ export function Wheel({ participants, isSpinning, onSpinComplete }: WheelProps) 
 
     // Calculate target rotation
     const segmentAngle = 360 / participants.length;
-    const baseRotation = 360 * 5; // 5 full rotations
+    const baseRotation = 360 * WHEEL_CONFIG.FULL_ROTATIONS;
     const targetSegmentRotation = randomIndex * segmentAngle;
     // Add 90 degrees to align with top pointer
     const finalRotation = baseRotation + (360 - targetSegmentRotation) + 90;
@@ -146,7 +140,7 @@ export function Wheel({ participants, isSpinning, onSpinComplete }: WheelProps) 
     // Animation function with easing
     const animate = () => {
       const elapsed = Date.now() - (startTimeRef.current || 0);
-      const duration = 4000; // 4 seconds
+      const duration = WHEEL_CONFIG.SPIN_DURATION;
 
       if (elapsed < duration) {
         // Easing function: cubic-bezier(0.17, 0.67, 0.12, 0.99)
@@ -193,4 +187,3 @@ export function Wheel({ participants, isSpinning, onSpinComplete }: WheelProps) 
     </div>
   );
 }
-

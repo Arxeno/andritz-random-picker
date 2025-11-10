@@ -1,26 +1,33 @@
 @import "tailwindcss";
 
 @theme {
-  /* shadcn/ui color palette */
+  /* Blue color palette theme
+   * Very light blue: #BFDCEF - hsl(203 63% 84%)
+   * Light blue: #7FBADE - hsl(200 54% 68%)
+   * Blue: #4098CE - hsl(200 54% 53%)
+   * Light dark blue: #0075BE - hsl(200 100% 37%)
+   * Dark blue: #003A70 - hsl(207 100% 22%)
+   */
+
   --color-background: hsl(0 0% 100%);
-  --color-foreground: hsl(0 0% 3.9%);
+  --color-foreground: hsl(207 100% 22%); /* Dark blue #003A70 */
   --color-card: hsl(0 0% 100%);
-  --color-card-foreground: hsl(0 0% 3.9%);
+  --color-card-foreground: hsl(207 100% 22%); /* Dark blue #003A70 */
   --color-popover: hsl(0 0% 100%);
-  --color-popover-foreground: hsl(0 0% 3.9%);
-  --color-primary: hsl(0 0% 9%);
-  --color-primary-foreground: hsl(0 0% 98%);
-  --color-secondary: hsl(0 0% 96.1%);
-  --color-secondary-foreground: hsl(0 0% 9%);
-  --color-muted: hsl(0 0% 96.1%);
-  --color-muted-foreground: hsl(0 0% 45.1%);
-  --color-accent: hsl(0 0% 96.1%);
-  --color-accent-foreground: hsl(0 0% 9%);
+  --color-popover-foreground: hsl(207 100% 22%); /* Dark blue #003A70 */
+  --color-primary: hsl(200 100% 37%); /* Light dark blue #0075BE */
+  --color-primary-foreground: hsl(0 0% 100%);
+  --color-secondary: hsl(203 63% 84%); /* Very light blue #BFDCEF */
+  --color-secondary-foreground: hsl(207 100% 22%); /* Dark blue #003A70 */
+  --color-muted: hsl(203 63% 94%); /* Lighter version of very light blue */
+  --color-muted-foreground: hsl(200 54% 53%); /* Blue #4098CE */
+  --color-accent: hsl(200 54% 68%); /* Light blue #7FBADE */
+  --color-accent-foreground: hsl(0 0% 100%);
   --color-destructive: hsl(0 84.2% 60.2%);
   --color-destructive-foreground: hsl(0 0% 98%);
-  --color-border: hsl(0 0% 89.8%);
-  --color-input: hsl(0 0% 89.8%);
-  --color-ring: hsl(0 0% 3.9%);
+  --color-border: hsl(203 63% 90%); /* Light border based on very light blue */
+  --color-input: hsl(203 63% 90%); /* Light input border */
+  --color-ring: hsl(200 100% 37%); /* Light dark blue #0075BE */
 
   /* Border radius */
   --radius-sm: 0.375rem;
@@ -41,23 +48,23 @@
 }
 
 .dark {
-  --color-background: hsl(0 0% 3.9%);
-  --color-foreground: hsl(0 0% 98%);
-  --color-card: hsl(0 0% 3.9%);
-  --color-card-foreground: hsl(0 0% 98%);
-  --color-popover: hsl(0 0% 3.9%);
-  --color-popover-foreground: hsl(0 0% 98%);
-  --color-primary: hsl(0 0% 98%);
-  --color-primary-foreground: hsl(0 0% 9%);
-  --color-secondary: hsl(0 0% 14.9%);
-  --color-secondary-foreground: hsl(0 0% 98%);
-  --color-muted: hsl(0 0% 14.9%);
-  --color-muted-foreground: hsl(0 0% 63.9%);
-  --color-accent: hsl(0 0% 14.9%);
-  --color-accent-foreground: hsl(0 0% 98%);
+  --color-background: hsl(207 100% 10%); /* Very dark blue */
+  --color-foreground: hsl(203 63% 84%); /* Very light blue #BFDCEF */
+  --color-card: hsl(207 100% 15%); /* Dark blue card background */
+  --color-card-foreground: hsl(203 63% 84%); /* Very light blue #BFDCEF */
+  --color-popover: hsl(207 100% 15%); /* Dark blue popover background */
+  --color-popover-foreground: hsl(203 63% 84%); /* Very light blue #BFDCEF */
+  --color-primary: hsl(200 54% 68%); /* Light blue #7FBADE */
+  --color-primary-foreground: hsl(207 100% 22%); /* Dark blue #003A70 */
+  --color-secondary: hsl(207 100% 22%); /* Dark blue #003A70 */
+  --color-secondary-foreground: hsl(203 63% 84%); /* Very light blue #BFDCEF */
+  --color-muted: hsl(207 100% 18%); /* Muted dark blue */
+  --color-muted-foreground: hsl(200 54% 68%); /* Light blue #7FBADE */
+  --color-accent: hsl(200 100% 37%); /* Light dark blue #0075BE */
+  --color-accent-foreground: hsl(0 0% 100%);
   --color-destructive: hsl(0 62.8% 30.6%);
   --color-destructive-foreground: hsl(0 0% 98%);
-  --color-border: hsl(0 0% 14.9%);
-  --color-input: hsl(0 0% 14.9%);
-  --color-ring: hsl(0 0% 83.1%);
+  --color-border: hsl(207 100% 20%); /* Dark border */
+  --color-input: hsl(207 100% 20%); /* Dark input border */
+  --color-ring: hsl(200 54% 68%); /* Light blue #7FBADE */
 }
