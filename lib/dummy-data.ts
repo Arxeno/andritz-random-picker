@@ -19,28 +19,23 @@ export interface DummyParticipant {
 export const DUMMY_PRIZES: DummyPrize[] = [
   {
     id: "prize-1",
-    name: "Grand Prize - Smart TV 55 inch",
-    imageUrl: "https://placehold.co/400x400/4f46e5/ffffff?text=Smart+TV",
+    name: "Bugatti Chiron",
+    imageUrl: "/bugatti.png",
   },
   {
     id: "prize-2",
-    name: "Second Prize - Smartphone",
-    imageUrl: "https://placehold.co/400x400/059669/ffffff?text=Smartphone",
+    name: "Jam Tangan Rolex",
+    imageUrl: "/rolex.png",
   },
   {
     id: "prize-3",
-    name: "Third Prize - Wireless Headphones",
-    imageUrl: "https://placehold.co/400x400/dc2626/ffffff?text=Headphones",
+    name: "5 Kavling di Menteng",
+    imageUrl: "rumah.jpg",
   },
   {
     id: "prize-4",
-    name: "Fourth Prize - Smart Watch",
-    imageUrl: "https://placehold.co/400x400/ea580c/ffffff?text=Smart+Watch",
-  },
-  {
-    id: "prize-5",
-    name: "Fifth Prize - Bluetooth Speaker",
-    imageUrl: "https://placehold.co/400x400/7c3aed/ffffff?text=Speaker",
+    name: "19 Juta Lapangan Kerja",
+    imageUrl: "lapangan-kerja.jpg",
   },
 ];
 
@@ -81,4 +76,3 @@ export const DUMMY_PARTICIPANTS: DummyParticipant[] = [
   { id: "p-29", fullName: "Eric King", department: "Management" },
   { id: "p-30", fullName: "Kayla Wright", department: "Sales (PKF)" },
 ];
-

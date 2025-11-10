@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import ReactCanvasConfetti from "react-canvas-confetti";
 import type { CreateTypes } from "canvas-confetti";
@@ -19,6 +19,14 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+  type CarouselApi,
+} from "@/components/ui/carousel";
+import {
   ArrowLeft,
   Sparkles,
   RotateCcw,
@@ -27,6 +35,7 @@ import {
   Home,
   History,
   AlertTriangle,
+  Gift,
 } from "lucide-react";
 
 import { DUMMY_PARTICIPANTS, DUMMY_PRIZES } from "@/lib/dummy-data";
@@ -43,11 +52,34 @@ export default function DummySpinPage() {
   const [confirmState, setConfirmState] = useState<ConfirmState>("idle");
   const [selectedPrize, setSelectedPrize] = useState<DummyPrize | null>(null);
   const [winnerDialogOpen, setWinnerDialogOpen] = useState(false);
+  const [carouselApi, setCarouselApi] = useState<CarouselApi>();
+  const [currentPrizeIndex, setCurrentPrizeIndex] = useState(0);
   const confettiRef = useRef<CreateTypes | null>(null);
 
   // Use dummy data
   const participants = DUMMY_PARTICIPANTS;
   const prizes = DUMMY_PRIZES;
+
+  // Track carousel selection
+  useEffect(() => {
+    if (!carouselApi) return;
+
+    const onSelect = () => {
+      setCurrentPrizeIndex(carouselApi.selectedScrollSnap());
+    };
+
+    carouselApi.on("select", onSelect);
+    onSelect(); // Set initial index
+
+    return () => {
+      carouselApi.off("select", onSelect);
+    };
+  }, [carouselApi]);
+
+  // Update selected prize when carousel changes
+  useEffect(() => {
+    setSelectedPrize(prizes[currentPrizeIndex]);
+  }, [currentPrizeIndex, prizes]);
 
   // Confetti instance
   const getInstance = useCallback((instance: CreateTypes | null) => {
@@ -226,6 +258,63 @@ export default function DummySpinPage() {
           </Card>
         ) : (
           <>
+            {/* Prize Carousel */}
+            <div className="mb-8 max-w-2xl mx-auto">
+              <h2 className="text-2xl font-bold text-center mb-4">
+                Current Prize
+              </h2>
+              <Carousel
+                setApi={setCarouselApi}
+                opts={{
+                  align: "center",
+                  loop: true,
+                }}
+                className="w-full"
+              >
+                <CarouselContent>
+                  {prizes.map((prize, index) => (
+                    <CarouselItem key={prize.id}>
+                      <Card className="border-2 border-primary/20">
+                        <CardContent className="p-6">
+                          <div className="flex flex-col items-center gap-4">
+                            {/* Prize Image */}
+                            {prize.imageUrl ? (
+                              <div className="w-full max-w-sm aspect-square rounded-lg overflow-hidden bg-muted">
+                                <img
+                                  src={prize.imageUrl}
+                                  alt={prize.name}
+                                  className="w-full h-full object-contain"
+                                />
+                              </div>
+                            ) : (
+                              <div className="w-full max-w-sm aspect-square rounded-lg bg-muted flex items-center justify-center">
+                                <Gift className="h-24 w-24 text-muted-foreground" />
+                              </div>
+                            )}
+
+                            {/* Prize Name */}
+                            <div className="text-center">
+                              <h3 className="text-2xl font-bold text-primary">
+                                {prize.name}
+                              </h3>
+                              <p className="text-sm text-muted-foreground mt-2">
+                                Prize {index + 1} of {prizes.length}
+                              </p>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+                <CarouselPrevious className="left-0" />
+                <CarouselNext className="right-0" />
+              </Carousel>
+              <p className="text-center text-sm text-muted-foreground mt-4">
+                ← Swipe or use arrows to select prize →
+              </p>
+            </div>
+
             {/* Wheel */}
             <div className="mb-8">
               <Wheel
