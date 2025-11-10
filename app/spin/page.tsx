@@ -381,7 +381,7 @@ export default function SpinPage() {
 
       {/* Confetti canvas */}
       <ReactCanvasConfetti
-        refConfetti={getInstance}
+        onInit={getInstance}
         style={{
           position: "fixed",
           pointerEvents: "none",

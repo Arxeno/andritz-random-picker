@@ -4,6 +4,7 @@ import { useState, useCallback, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import ReactCanvasConfetti from "react-canvas-confetti";
 import type { CreateTypes } from "canvas-confetti";
+import Fireworks from "react-canvas-confetti/dist/presets/fireworks";
 import { toast } from "sonner";
 
 import { Header } from "@/components/header";
@@ -370,6 +371,7 @@ export default function DummySpinPage() {
       {/* Winner Dialog */}
       {winner && (
         <Dialog open={winnerDialogOpen} onOpenChange={setWinnerDialogOpen}>
+          <Fireworks autorun={{ speed: 3 }} />
           <DialogContent className="sm:max-w-[600px]">
             <DialogHeader>
               <DialogTitle className="text-center text-3xl">
@@ -473,8 +475,8 @@ export default function DummySpinPage() {
       )}
 
       {/* Confetti canvas */}
-      <ReactCanvasConfetti
-        refConfetti={getInstance}
+      {/* <ReactCanvasConfetti
+        onInit={getInstance}
         style={{
           position: "fixed",
           pointerEvents: "none",
@@ -483,7 +485,7 @@ export default function DummySpinPage() {
           top: 0,
           left: 0,
         }}
-      />
+      /> */}
     </>
   );
 }
