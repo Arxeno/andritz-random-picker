@@ -398,7 +398,7 @@ export default function DummySpinPage() {
       {/* Winner Dialog */}
       {winner && (
         <Dialog open={winnerDialogOpen} onOpenChange={setWinnerDialogOpen}>
-          <Fireworks autorun={{ speed: 3 }} />
+          {winnerDialogOpen && <Fireworks autorun={{ speed: 3 }} />}
           <DialogContent className="sm:max-w-[600px]">
             <DialogHeader>
               <DialogTitle className="text-center text-3xl">
