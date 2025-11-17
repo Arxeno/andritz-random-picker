@@ -120,7 +120,7 @@ export function PrizeTable({ prizes, onEdit, onDelete }: PrizeTableProps) {
                       ) : (
                         <Badge
                           variant="outline"
-                          className="bg-accent/10 text-accent-foreground border-accent"
+                          className="bg-accent/10 text-foreground border-accent"
                         >
                           <CheckCircle className="h-3 w-3 mr-1" />
                           Available

@@ -19,7 +19,7 @@ import {
 export default function Home() {
   const stats = useQuery(api.dashboard.getStats);
 
-  const devMode: boolean = true;
+  const devMode: boolean = false;
 
   return (
     <div className="bg-accent bg-gradient-to-br from-primary/10 via-background to-accent/10 h-screen min-h-screen">
@@ -35,6 +35,7 @@ export default function Home() {
                 value={stats?.participantCount ?? 0}
                 icon={Users}
                 loading={stats === undefined}
+                actionHref="/participants"
               />
               <StatCard
                 title="Total Winners"
@@ -47,6 +48,7 @@ export default function Home() {
                 value={stats?.prizeCount ?? 0}
                 icon={Gift}
                 loading={stats === undefined}
+                actionHref="/prizes"
               />
             </div>
           </section>

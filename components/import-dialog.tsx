@@ -200,13 +200,11 @@ export function ImportDialog({
 
         <div className="space-y-4">
           {/* Valid departments info */}
-          <div className="rounded-md bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 p-3">
-            <p className="text-sm font-semibold text-blue-800 dark:text-blue-200 mb-1">
+          <div className="rounded-md bg-blue-50 border border-blue-200 p-3">
+            <p className="text-sm font-semibold text-blue-800 mb-1">
               Valid Departments:
             </p>
-            <p className="text-xs text-blue-700 dark:text-blue-300">
-              {DEPARTMENTS.join(", ")}
-            </p>
+            <p className="text-xs text-blue-700">{DEPARTMENTS.join(", ")}</p>
           </div>
           <div className="flex gap-2">
             <Button

@@ -190,7 +190,7 @@ export default function SpinPage() {
   return (
     <>
       <Header />
-      <main className="container py-8 max-w-7xl">
+      <main className="container py-8 max-w-7xl mx-auto">
         {/* Back button */}
         <Button
           variant="ghost"
@@ -272,13 +272,9 @@ export default function SpinPage() {
                                 <div className="flex flex-col items-center gap-2">
                                   {/* Prize Image */}
                                   {prize.imageStorageId ? (
-                                    <div className="w-fit max-w-sm aspect-square rounded-lg overflow-hidden bg-muted">
-                                      <img
-                                        src={`${process.env.NEXT_PUBLIC_CONVEX_URL}/api/storage/${prize.imageStorageId}`}
-                                        alt={prize.name}
-                                        className="w-[200px] aspect-square object-contain"
-                                      />
-                                    </div>
+                                    <PrizeImage
+                                      storageId={prize.imageStorageId}
+                                    />
                                   ) : (
                                     <div className="w-full max-w-sm aspect-square rounded-lg bg-muted flex items-center justify-center">
                                       <Gift className="h-24 w-24 text-muted-foreground" />
@@ -440,5 +436,28 @@ export default function SpinPage() {
         </Dialog>
       )}
     </>
+  );
+}
+
+// Component to display prize image from Convex storage
+function PrizeImage({ storageId }: { storageId: Id<"_storage"> }) {
+  const imageUrl = useQuery(api.files.getUrl, { storageId });
+
+  if (!imageUrl) {
+    return (
+      <div className="w-fit max-w-sm aspect-square rounded-lg overflow-hidden bg-muted">
+        <div className="w-[200px] aspect-square bg-muted animate-pulse" />
+      </div>
+    );
+  }
+
+  return (
+    <div className="w-fit max-w-sm aspect-square rounded-lg overflow-hidden bg-muted">
+      <img
+        src={imageUrl}
+        alt="Prize"
+        className="w-[200px] aspect-square object-contain"
+      />
+    </div>
   );
 }
