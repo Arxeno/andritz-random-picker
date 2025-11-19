@@ -39,6 +39,7 @@ import {
 
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
+import useSound from "use-sound";
 
 interface Participant {
   _id: Id<"participants">;
@@ -51,6 +52,15 @@ interface Prize {
   name: string;
   imageStorageId?: Id<"_storage">;
   status: "available" | "won";
+}
+
+interface GroupedPrize {
+  name: string;
+  imageStorageId?: Id<"_storage">;
+  totalCount: number;
+  availableCount: number;
+  wonCount: number;
+  prizeIds: Id<"prizes">[];
 }
 
 type SpinState = "idle" | "spinning" | "winner";
@@ -66,14 +76,21 @@ export default function SpinPage() {
   const [winnerDialogOpen, setWinnerDialogOpen] = useState(false);
   const [carouselApi, setCarouselApi] = useState<CarouselApi>();
   const [currentPrizeIndex, setCurrentPrizeIndex] = useState(0);
+  const [play] = useSound("/drum_and_celebration.ogg");
 
   // Fetch participants and prizes
   const participants = useQuery(api.spin.getEligibleParticipants);
   const participantCount = useQuery(api.spin.getParticipantCount);
   const availablePrizes = useQuery(api.prizes.listAvailablePrizes);
+  const groupedPrizes = useQuery(api.prizes.listGroupedPrizes);
 
   // Mutation to confirm winner
   const confirmWinnerMutation = useMutation(api.winners.confirmWinner);
+
+  // Filter grouped prizes to only show those with available count > 0
+  const availableGroupedPrizes = groupedPrizes?.filter(
+    (g) => g.availableCount > 0,
+  );
 
   // Track carousel selection
   useEffect(() => {
@@ -94,9 +111,16 @@ export default function SpinPage() {
   // Update selected prize when carousel changes
   useEffect(() => {
     if (availablePrizes && availablePrizes.length > 0) {
-      setSelectedPrize(availablePrizes[currentPrizeIndex]);
+      // Get the first available prize from the selected group
+      const groupedPrize = availableGroupedPrizes?.[currentPrizeIndex];
+      if (groupedPrize) {
+        const firstAvailable = availablePrizes.find(
+          (p) => p.name === groupedPrize.name && p.status === "available",
+        );
+        setSelectedPrize(firstAvailable || null);
+      }
     }
-  }, [currentPrizeIndex, availablePrizes]);
+  }, [currentPrizeIndex, availablePrizes, availableGroupedPrizes]);
 
   // Handle spin complete (called by Wheel component)
   const handleSpinComplete = useCallback((selectedWinner: Participant) => {
@@ -112,6 +136,8 @@ export default function SpinPage() {
 
   // Handle spin
   const handleSpin = useCallback(() => {
+    play();
+
     if (!participants || participants.length === 0) {
       toast.error("No participants available", {
         description: "Please add participants first.",
@@ -262,18 +288,18 @@ export default function SpinPage() {
                       className="w-[400px] mx-auto"
                     >
                       <CarouselContent>
-                        {availablePrizes.map((prize, index) => (
+                        {availableGroupedPrizes?.map((groupedPrize, index) => (
                           <CarouselItem
-                            key={prize._id}
+                            key={groupedPrize.name}
                             className="flex justify-center"
                           >
                             <Card className="border-2 border-primary/20 p-0 w-[300px]">
                               <CardContent>
                                 <div className="flex flex-col items-center gap-2">
                                   {/* Prize Image */}
-                                  {prize.imageStorageId ? (
+                                  {groupedPrize.imageStorageId ? (
                                     <PrizeImage
-                                      storageId={prize.imageStorageId}
+                                      storageId={groupedPrize.imageStorageId}
                                     />
                                   ) : (
                                     <div className="w-full max-w-sm aspect-square rounded-lg bg-muted flex items-center justify-center">
@@ -284,11 +310,16 @@ export default function SpinPage() {
                                   {/* Prize Name */}
                                   <div className="text-center">
                                     <h3 className="text-2xl font-bold text-primary">
-                                      {prize.name}
+                                      {groupedPrize.name}
                                     </h3>
-                                    <p className="text-sm text-muted-foreground mt-2">
+                                    <p className="text-sm text-muted-foreground mt-1">
+                                      {groupedPrize.availableCount} available
+                                      {groupedPrize.wonCount > 0 &&
+                                        ` (${groupedPrize.wonCount} won)`}
+                                    </p>
+                                    <p className="text-sm text-muted-foreground mt-1">
                                       Prize {index + 1} of{" "}
-                                      {availablePrizes.length}
+                                      {availableGroupedPrizes.length}
                                     </p>
                                   </div>
                                 </div>

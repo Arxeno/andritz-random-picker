@@ -25,6 +25,7 @@ export default defineSchema({
   }).index("by_participant", ["participantId"]),
 
   // Prizes table - stores prize information with images
+  // Each record represents one physical prize instance
   prizes: defineTable({
     name: v.string(),
     imageStorageId: v.optional(v.id("_storage")), // Convex file storage ID

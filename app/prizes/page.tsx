@@ -13,19 +13,19 @@ import { Id } from "@/convex/_generated/dataModel";
 
 export default function PrizesPage() {
   const router = useRouter();
-  const prizes = useQuery(api.prizes.listPrizes);
+  const groupedPrizes = useQuery(api.prizes.listGroupedPrizes);
   const addPrize = useMutation(api.prizes.addPrize);
   const updatePrize = useMutation(api.prizes.updatePrize);
-  const deletePrize = useMutation(api.prizes.deletePrize);
+  const deletePrizesByName = useMutation(api.prizes.deletePrizesByName);
 
   const [editingPrize, setEditingPrize] = useState<{
-    _id: Id<"prizes">;
     name: string;
     imageStorageId?: Id<"_storage">;
   } | null>(null);
 
   const handleAddPrize = async (data: {
     name: string;
+    quantity: number;
     imageStorageId?: Id<"_storage">;
   }) => {
     try {
@@ -41,14 +41,16 @@ export default function PrizesPage() {
 
   const handleUpdatePrize = async (data: {
     name: string;
+    quantity: number;
     imageStorageId?: Id<"_storage">;
   }) => {
     if (!editingPrize) return;
 
     try {
       await updatePrize({
-        prizeId: editingPrize._id,
-        ...data,
+        oldName: editingPrize.name,
+        newName: data.name,
+        imageStorageId: data.imageStorageId,
       });
       toast.success("Prize updated successfully!");
       setEditingPrize(null);
@@ -60,19 +62,18 @@ export default function PrizesPage() {
     }
   };
 
-  const handleDeletePrize = async (prizeId: Id<"prizes">) => {
+  const handleDeletePrize = async (name: string) => {
     try {
-      await deletePrize({ prizeId });
-      toast.success("Prize deleted successfully!");
+      await deletePrizesByName({ name });
+      toast.success("All prizes with that name deleted successfully!");
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : "Failed to delete prize",
+        error instanceof Error ? error.message : "Failed to delete prizes",
       );
     }
   };
 
   const handleEdit = (prize: {
-    _id: Id<"prizes">;
     name: string;
     imageStorageId?: Id<"_storage">;
   }) => {
@@ -85,7 +86,7 @@ export default function PrizesPage() {
     setEditingPrize(null);
   };
 
-  if (prizes === undefined) {
+  if (groupedPrizes === undefined) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 dark:from-gray-900 dark:via-purple-900/20 dark:to-blue-900/20 p-8">
         <div className="max-w-6xl mx-auto">
@@ -148,13 +149,32 @@ export default function PrizesPage() {
               <h3 className="text-lg font-semibold mb-4">Prize Statistics</h3>
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
-                  <span className="text-muted-foreground">Total Prizes:</span>
-                  <span className="text-2xl font-bold">{prizes.length}</span>
+                  <span className="text-muted-foreground">Prize Types:</span>
+                  <span className="text-2xl font-bold">
+                    {groupedPrizes.length}
+                  </span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-muted-foreground">With Images:</span>
+                  <span className="text-muted-foreground">
+                    Total Instances:
+                  </span>
                   <span className="text-2xl font-bold">
-                    {prizes.filter((p) => p.imageStorageId).length}
+                    {groupedPrizes.reduce((sum, p) => sum + p.totalCount, 0)}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-muted-foreground">Available:</span>
+                  <span className="text-2xl font-bold text-green-600">
+                    {groupedPrizes.reduce(
+                      (sum, p) => sum + p.availableCount,
+                      0,
+                    )}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-muted-foreground">Won:</span>
+                  <span className="text-2xl font-bold text-blue-600">
+                    {groupedPrizes.reduce((sum, p) => sum + p.wonCount, 0)}
                   </span>
                 </div>
               </div>
@@ -173,7 +193,7 @@ export default function PrizesPage() {
         <div>
           <h2 className="text-2xl font-bold mb-4">All Prizes</h2>
           <PrizeTable
-            prizes={prizes}
+            prizes={groupedPrizes}
             onEdit={handleEdit}
             onDelete={handleDeletePrize}
           />

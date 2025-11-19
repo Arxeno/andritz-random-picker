@@ -33,25 +33,27 @@ import { Id } from "@/convex/_generated/dataModel";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 
-interface Prize {
-  _id: Id<"prizes">;
+interface GroupedPrize {
   name: string;
   imageStorageId?: Id<"_storage">;
-  status: "available" | "won";
+  totalCount: number;
+  availableCount: number;
+  wonCount: number;
+  prizeIds: Id<"prizes">[];
 }
 
 interface PrizeTableProps {
-  prizes: Prize[];
-  onEdit: (prize: Prize) => void;
-  onDelete: (prizeId: Id<"prizes">) => void;
+  prizes: GroupedPrize[];
+  onEdit: (prize: { name: string; imageStorageId?: Id<"_storage"> }) => void;
+  onDelete: (name: string) => void;
 }
 
 export function PrizeTable({ prizes, onEdit, onDelete }: PrizeTableProps) {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [prizeToDelete, setPrizeToDelete] = useState<Id<"prizes"> | null>(null);
+  const [prizeToDelete, setPrizeToDelete] = useState<string | null>(null);
 
-  const handleDeleteClick = (prizeId: Id<"prizes">) => {
-    setPrizeToDelete(prizeId);
+  const handleDeleteClick = (prizeName: string) => {
+    setPrizeToDelete(prizeName);
     setDeleteDialogOpen(true);
   };
 
@@ -89,6 +91,7 @@ export function PrizeTable({ prizes, onEdit, onDelete }: PrizeTableProps) {
                 <TableRow>
                   <TableHead className="w-[100px]">Image</TableHead>
                   <TableHead>Prize Name</TableHead>
+                  <TableHead className="w-[100px]">Quantity</TableHead>
                   <TableHead className="w-[120px]">Status</TableHead>
                   <TableHead className="text-right w-[150px]">
                     Actions
@@ -97,7 +100,7 @@ export function PrizeTable({ prizes, onEdit, onDelete }: PrizeTableProps) {
               </TableHeader>
               <TableBody>
                 {prizes.map((prize) => (
-                  <TableRow key={prize._id}>
+                  <TableRow key={prize.name}>
                     <TableCell>
                       {prize.imageStorageId ? (
                         <PrizeImage storageId={prize.imageStorageId} />
@@ -109,13 +112,29 @@ export function PrizeTable({ prizes, onEdit, onDelete }: PrizeTableProps) {
                     </TableCell>
                     <TableCell className="font-medium">{prize.name}</TableCell>
                     <TableCell>
-                      {prize.status === "won" ? (
+                      <div className="space-y-1">
+                        <div className="text-sm">Total: {prize.totalCount}</div>
+                        <div className="text-xs text-muted-foreground">
+                          {prize.availableCount} available
+                          {prize.wonCount > 0 && `, ${prize.wonCount} won`}
+                        </div>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      {prize.availableCount === 0 ? (
                         <Badge
                           variant="secondary"
                           className="bg-secondary text-secondary-foreground"
                         >
                           <Trophy className="h-3 w-3 mr-1" />
-                          Won
+                          All Won
+                        </Badge>
+                      ) : prize.wonCount > 0 ? (
+                        <Badge
+                          variant="outline"
+                          className="bg-yellow-50 text-yellow-700 border-yellow-300"
+                        >
+                          Partial
                         </Badge>
                       ) : (
                         <Badge
@@ -132,7 +151,12 @@ export function PrizeTable({ prizes, onEdit, onDelete }: PrizeTableProps) {
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => onEdit(prize)}
+                          onClick={() =>
+                            onEdit({
+                              name: prize.name,
+                              imageStorageId: prize.imageStorageId,
+                            })
+                          }
                         >
                           <Edit className="h-4 w-4 mr-1" />
                           Edit
@@ -140,10 +164,10 @@ export function PrizeTable({ prizes, onEdit, onDelete }: PrizeTableProps) {
                         <Button
                           variant="destructive"
                           size="sm"
-                          onClick={() => handleDeleteClick(prize._id)}
+                          onClick={() => handleDeleteClick(prize.name)}
                         >
                           <Trash2 className="h-4 w-4 mr-1" />
-                          Delete
+                          Delete All ({prize.totalCount})
                         </Button>
                       </div>
                     </TableCell>
@@ -158,10 +182,12 @@ export function PrizeTable({ prizes, onEdit, onDelete }: PrizeTableProps) {
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete Prize</AlertDialogTitle>
+            <AlertDialogTitle>Delete All Prizes</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete this prize? This action cannot be
-              undone.
+              Are you sure you want to delete all instances of "{prizeToDelete}
+              "? This will remove all{" "}
+              {prizes.find((p) => p.name === prizeToDelete)?.totalCount || 0}{" "}
+              prize(s) with this name. This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -170,7 +196,7 @@ export function PrizeTable({ prizes, onEdit, onDelete }: PrizeTableProps) {
               onClick={handleDeleteConfirm}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
-              Delete
+              Delete All
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

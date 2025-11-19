@@ -14,6 +14,7 @@ import {
   Download,
   Gift,
   QrCode,
+  UserCheck,
 } from "lucide-react";
 
 export default function Home() {
@@ -22,7 +23,7 @@ export default function Home() {
   const devMode: boolean = false;
 
   return (
-    <div className="bg-accent bg-gradient-to-br from-primary/10 via-background to-accent/10 h-screen min-h-screen">
+    <div>
       <Header />
       <main className="container p-8 mx-auto">
         <div className="space-y-8">
@@ -92,6 +93,12 @@ export default function Home() {
                 description="Display QR code on projector for participant registration"
                 icon={QrCode}
                 href="/register-qr"
+              />
+              <NavigationCard
+                title="Registered Users"
+                description="View all registered participants in card layout"
+                icon={UserCheck}
+                href="/registered-user"
               />
             </div>
           </section>

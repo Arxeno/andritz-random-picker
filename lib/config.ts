@@ -17,20 +17,29 @@ export const WHEEL_CONFIG = {
    * Number of full rotations the wheel makes during spin
    * @default 5
    */
-  FULL_ROTATIONS: 5,
+  FULL_ROTATIONS: 10,
 
   /**
    * Wheel colors - alternating for visual distinction
    */
   COLORS: [
-    "#FF6B6B", // Red
-    "#4ECDC4", // Teal
-    "#45B7D1", // Blue
-    "#FFA07A", // Light Salmon
-    "#98D8C8", // Mint
-    "#F7DC6F", // Yellow
-    "#BB8FCE", // Purple
-    "#85C1E2", // Sky Blue
+    // "#FF6B6B", // Red
+    // "#4ECDC4", // Teal
+    // "#45B7D1", // Blue
+    // "#FFA07A", // Light Salmon
+    // "#98D8C8", // Mint
+    // "#F7DC6F", // Yellow
+    // "#BB8FCE", // Purple
+    // "#85C1E2", // Sky Blue
+    "#FFFFFF", // White
+    // "#BFDCEF", // Light Blue
+    "#003A70", // Dark Blue
+  ],
+
+  FONT_COLORS: [
+    "#003A70",
+    // "#003A70",
+    "#FFFFFF",
   ],
 } as const;
 
@@ -93,4 +102,3 @@ export const APP_CONFIG = {
   UI: UI_CONFIG,
   PRIZE: PRIZE_CONFIG,
 } as const;
-

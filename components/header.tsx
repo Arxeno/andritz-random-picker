@@ -22,13 +22,13 @@ export function Header() {
         <Link href={"/"}>
           <Image
             src={"/logo.svg"}
-            alt="Doorprize Manager"
+            alt="Doorprize App"
             width={128}
             height={32}
           />
         </Link>
         <div className="flex items-center gap-2">
-          <h1 className="text-xl font-bold">Doorprize Manager</h1>
+          <h1 className="text-xl font-bold">Doorprize App</h1>
         </div>
         <Button variant="outline" size="sm" onClick={handleSignOut}>
           <LogOut className="mr-2 h-4 w-4" />

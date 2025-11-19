@@ -92,7 +92,7 @@ export default function SetupAdmin() {
             Create Admin Account
           </CardTitle>
           <CardDescription className="text-center">
-            One-time setup for Doorprize Manager
+            One-time setup for Doorprize App
           </CardDescription>
         </CardHeader>
         <CardContent>

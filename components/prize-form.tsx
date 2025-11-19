@@ -14,9 +14,14 @@ import { Id } from "@/convex/_generated/dataModel";
 interface PrizeFormProps {
   onSubmit: (data: {
     name: string;
+    quantity: number;
     imageStorageId?: Id<"_storage">;
   }) => Promise<void>;
-  initialData?: { name: string; imageStorageId?: Id<"_storage"> };
+  initialData?: {
+    name: string;
+    quantity: number;
+    imageStorageId?: Id<"_storage">;
+  };
   submitLabel?: string;
   title?: string;
 }
@@ -28,6 +33,7 @@ export function PrizeForm({
   title = "Add Prize",
 }: PrizeFormProps) {
   const [name, setName] = useState(initialData?.name || "");
+  const [quantity, setQuantity] = useState(initialData?.quantity || 1);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -71,7 +77,8 @@ export function PrizeForm({
     setIsLoading(true);
 
     try {
-      let imageStorageId: Id<"_storage"> | undefined = initialData?.imageStorageId;
+      let imageStorageId: Id<"_storage"> | undefined =
+        initialData?.imageStorageId;
 
       // Upload image if a new one was selected
       if (imageFile) {
@@ -93,11 +100,12 @@ export function PrizeForm({
         imageStorageId = storageId;
       }
 
-      await onSubmit({ name, imageStorageId });
+      await onSubmit({ name, quantity, imageStorageId });
 
       // Clear form only if not editing (no initial data)
       if (!initialData) {
         setName("");
+        setQuantity(1);
         setImageFile(null);
         setImagePreview(null);
       }
@@ -128,6 +136,22 @@ export function PrizeForm({
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Grand Prize - Laptop"
+              required
+              disabled={isLoading}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="quantity">Quantity *</Label>
+            <Input
+              id="quantity"
+              type="number"
+              min="1"
+              value={quantity}
+              onChange={(e) =>
+                setQuantity(Number.parseInt(e.target.value) || 1)
+              }
+              placeholder="1"
               required
               disabled={isLoading}
             />
@@ -204,4 +228,3 @@ export function PrizeForm({
     </Card>
   );
 }
-

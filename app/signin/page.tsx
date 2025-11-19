@@ -29,13 +29,13 @@ export default function SignIn() {
           <div className="w-full flex justify-center">
             <Image
               src={"/logo.svg"}
-              alt="Doorprize Manager"
+              alt="Doorprize App"
               width={200}
               height={32}
             />
           </div>
           <CardTitle className="text-xl font-bold text-center">
-            Doorprize Manager
+            Doorprize App
           </CardTitle>
           <CardDescription className="text-center">Admin Login</CardDescription>
         </CardHeader>
