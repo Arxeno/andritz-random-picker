@@ -136,8 +136,6 @@ export default function SpinPage() {
 
   // Handle spin
   const handleSpin = useCallback(() => {
-    play();
-
     if (!participants || participants.length === 0) {
       toast.error("No participants available", {
         description: "Please add participants first.",
@@ -354,7 +352,10 @@ export default function SpinPage() {
                   <div className="text-center mb-8">
                     <Button
                       size="lg"
-                      onClick={handleSpin}
+                      onClick={() => {
+                        play();
+                        handleSpin();
+                      }}
                       className="text-xl px-12 py-6"
                       disabled={
                         !availablePrizes || availablePrizes.length === 0
