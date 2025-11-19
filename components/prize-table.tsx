@@ -44,7 +44,11 @@ interface GroupedPrize {
 
 interface PrizeTableProps {
   prizes: GroupedPrize[];
-  onEdit: (prize: { name: string; imageStorageId?: Id<"_storage"> }) => void;
+  onEdit: (prize: {
+    name: string;
+    quantity: number;
+    imageStorageId?: Id<"_storage">;
+  }) => void;
   onDelete: (name: string) => void;
 }
 
@@ -154,6 +158,7 @@ export function PrizeTable({ prizes, onEdit, onDelete }: PrizeTableProps) {
                           onClick={() =>
                             onEdit({
                               name: prize.name,
+                              quantity: prize.totalCount,
                               imageStorageId: prize.imageStorageId,
                             })
                           }
@@ -186,7 +191,8 @@ export function PrizeTable({ prizes, onEdit, onDelete }: PrizeTableProps) {
             <AlertDialogDescription>
               Are you sure you want to delete all instances of "{prizeToDelete}
               "? This will remove all{" "}
-              {prizes.find((p) => p.name === prizeToDelete)?.totalCount || 0}{" "}
+              {prizes.find((p) => p.name === prizeToDelete)?.totalCount ||
+                0}{" "}
               prize(s) with this name. This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>

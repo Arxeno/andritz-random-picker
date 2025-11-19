@@ -20,6 +20,7 @@ export default function PrizesPage() {
 
   const [editingPrize, setEditingPrize] = useState<{
     name: string;
+    quantity: number;
     imageStorageId?: Id<"_storage">;
   } | null>(null);
 
@@ -75,6 +76,7 @@ export default function PrizesPage() {
 
   const handleEdit = (prize: {
     name: string;
+    quantity: number;
     imageStorageId?: Id<"_storage">;
   }) => {
     setEditingPrize(prize);
@@ -88,7 +90,7 @@ export default function PrizesPage() {
 
   if (groupedPrizes === undefined) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 dark:from-gray-900 dark:via-purple-900/20 dark:to-blue-900/20 p-8">
+      <div className="min-h-screen bg-accent bg-linear-to-br from-primary/10 via-background to-accent/10 p-8">
         <div className="max-w-6xl mx-auto">
           <div className="flex items-center justify-center py-12">
             <p className="text-muted-foreground">Loading prizes...</p>
@@ -99,27 +101,22 @@ export default function PrizesPage() {
   }
 
   return (
-    <div className="min-h-screen p-8 mx-auto">
+    <div className="min-h-screen bg-accent bg-linear-to-br from-primary/10 via-background to-accent/10 p-8">
       <div className="max-w-6xl mx-auto space-y-8">
         {/* Header */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={() => router.push("/")}
-            >
-              <ArrowLeft className="h-4 w-4" />
-            </Button>
-            <div>
-              <h1 className="text-3xl font-bold flex items-center gap-2">
-                <Gift className="h-8 w-8" />
-                Prize Management
-              </h1>
-              <p className="text-muted-foreground mt-1">
-                Add and manage prizes for your event
-              </p>
-            </div>
+        <div className="flex items-center gap-4">
+          <Button variant="ghost" onClick={() => router.push("/")}>
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back to Menu
+          </Button>
+          <div>
+            <h1 className="text-3xl font-bold flex items-center gap-2">
+              <Gift className="h-8 w-8" />
+              Prize Management
+            </h1>
+            <p className="text-muted-foreground mt-1">
+              Add and manage prizes for your event
+            </p>
           </div>
         </div>
 
