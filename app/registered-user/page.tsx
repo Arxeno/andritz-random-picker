@@ -113,8 +113,7 @@ const MainContent = ({
           <>
             <div className="mb-4 text-sm text-[#DCB96E] text-center">
               Showing {participants.length} participant
-              {participants.length !== 1 ? "s" : ""} in {participantRows.length}{" "}
-              row{participantRows.length !== 1 ? "s" : ""}
+              {participants.length !== 1 ? "s" : ""}
             </div>
 
             {/* Seamless Scrolling Carousel - Multiple Rows */}
