@@ -19,7 +19,7 @@ export const ParticipantCard = ({ participant }: ParticipantCardProps) => {
             <User className="h-6 w-6 text-[#B06727]" />
           </div> */}
       {/* <div className="flex-1 min-w-0"> */}
-      <CardTitle className="text-3xl w-fit text-white">
+      <CardTitle className="text-3xl w-fit text-white truncate">
         {participant.fullName}
       </CardTitle>
       {/* </div> */}
