@@ -165,14 +165,15 @@ const MainContent = ({
                     ))}
 
                     {/* Duplicate set for seamless loop */}
-                    {row.map((participant) => (
-                      <div
-                        key={`duplicate-${participant._id}`}
-                        className="shrink-0 w-80 px-2"
-                      >
-                        <ParticipantCard participant={participant} />
-                      </div>
-                    ))}
+                    {row.length > 10 &&
+                      row.map((participant) => (
+                        <div
+                          key={`duplicate-${participant._id}`}
+                          className="shrink-0 w-80 px-2"
+                        >
+                          <ParticipantCard participant={participant} />
+                        </div>
+                      ))}
                   </div>
                 </div>
               ))}
