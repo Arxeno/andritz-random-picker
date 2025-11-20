@@ -5,7 +5,7 @@ import { api } from "@/convex/_generated/api";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ArrowLeft, Search, Users } from "lucide-react";
+import { ArrowLeft, Search, Users, Disc3 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Id } from "@/convex/_generated/dataModel";
@@ -42,17 +42,26 @@ const MainContent = ({
     <div>
       <div className="w-full mx-auto pt-8">
         {/* Header */}
-        <div className="flex items-center gap-4 mb-8 text-[#EBCC6F] max-w-7xl mx-auto">
-          <Button variant="ghost" onClick={() => router.push("/")}>
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Menu
-          </Button>
-          <div>
-            <h1 className="text-3xl font-bold">Registered Participants</h1>
-            <p className="text-[#DCB96E] mt-1">
-              View all registered participants for the event
-            </p>
+        <div className="flex items-center justify-between gap-4 mb-8 text-[#EBCC6F] max-w-7xl mx-auto">
+          <div className="flex items-center gap-4">
+            <Button variant="ghost" onClick={() => router.push("/")}>
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Back to Menu
+            </Button>
+            <div>
+              <h1 className="text-3xl font-bold">Registered Participants</h1>
+              <p className="text-[#DCB96E] mt-1">
+                View all registered participants for the event
+              </p>
+            </div>
           </div>
+          <Button
+            onClick={() => router.push("/spin")}
+            className="bg-linear-to-r from-[#DCB96E] to-[#CD974E] hover:from-[#CD974E] hover:to-[#B06727] text-white font-semibold"
+          >
+            <Disc3 className="h-4 w-4 mr-2" />
+            Spin the Wheel
+          </Button>
         </div>
 
         {/* Search and Stats */}
