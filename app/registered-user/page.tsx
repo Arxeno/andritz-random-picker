@@ -294,7 +294,7 @@ export default function RegisteredUserPage() {
   const participantRows = chunkParticipants(participants, 10);
 
   return (
-    <Stack className="w-full min-h-screen overflow-hidden">
+    <Stack className="w-full h-screen overflow-hidden">
       <div className="bg-linear-to-b from-[#103457] via-[#1A558A] to-[#103457] overflow-hidden max-w-[100vw] max-h-screen">
         <BannerCarousels />
       </div>

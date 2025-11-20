@@ -20,7 +20,9 @@ export const ParticipantCard = ({ participant }: ParticipantCardProps) => {
           </div> */}
       {/* <div className="flex-1 min-w-0"> */}
       <CardTitle className="text-3xl w-fit text-white truncate">
-        {participant.fullName}
+        {participant.fullName.length > 15
+          ? participant.fullName.substring(0, 12) + "..."
+          : participant.fullName}
       </CardTitle>
       {/* </div> */}
       {/* </div> */}
