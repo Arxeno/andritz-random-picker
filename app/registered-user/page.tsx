@@ -68,7 +68,7 @@ export default function RegisteredUserPage() {
                   placeholder="Search by name or department..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 text-[#DCB96E] placeholder:text-[#B06727]"
+                  className="pl-10 text-[#103457] placeholder:text-[#B06727]"
                 />
               </div>
             </CardContent>
@@ -95,16 +95,16 @@ export default function RegisteredUserPage() {
         {/* Participants Grid */}
         {participants === undefined ? (
           <div className="text-center py-12">
-            <p className="text-muted-foreground">Loading participants...</p>
+            <p className="text-[#EBCC6F]">Loading participants...</p>
           </div>
         ) : participants.length === 0 ? (
           <Card>
             <CardContent className="py-12 text-center">
-              <Users className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
+              <Users className="h-16 w-16 mx-auto text-[#EBCC6F] mb-4" />
               <h3 className="text-lg font-semibold mb-2">
                 {searchTerm ? "No participants found" : "No participants yet"}
               </h3>
-              <p className="text-muted-foreground">
+              <p className="text-[#EBCC6F]">
                 {searchTerm
                   ? "Try adjusting your search terms"
                   : "Participants will appear here once they register"}
