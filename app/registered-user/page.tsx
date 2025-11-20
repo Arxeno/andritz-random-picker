@@ -152,9 +152,11 @@ const MainContent = ({
                 <div key={rowIndex} className="relative overflow-hidden">
                   <div
                     className={`flex ${
-                      rowIndex % 2 === 0
-                        ? "animate-scroll-left"
-                        : "animate-scroll-right"
+                      row.length >= 8
+                        ? rowIndex % 2 === 0
+                          ? "animate-scroll-left"
+                          : "animate-scroll-right"
+                        : ""
                     }`}
                   >
                     {/* First set */}
@@ -165,7 +167,7 @@ const MainContent = ({
                     ))}
 
                     {/* Duplicate set for seamless loop */}
-                    {row.length > 10 &&
+                    {row.length >= 8 &&
                       row.map((participant) => (
                         <div
                           key={`duplicate-${participant._id}`}
