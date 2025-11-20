@@ -2,13 +2,17 @@
 
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ArrowLeft, Search, User, Users } from "lucide-react";
+import { ArrowLeft, Search, Users } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Id } from "@/convex/_generated/dataModel";
+import { ParticipantCard } from "@/components/participant-card";
+import Stack from "@/components/stack";
+import { cn } from "@/lib/utils";
+import Image from "next/image";
 
 interface Participant {
   _id: Id<"participants">;
@@ -16,32 +20,26 @@ interface Participant {
   department: string;
 }
 
-export default function RegisteredUserPage() {
-  const router = useRouter();
-  const [searchTerm, setSearchTerm] = useState("");
+interface MainContentProps {
+  searchTerm: string;
+  setSearchTerm: (value: string) => void;
+  allParticipants: Participant[] | undefined;
+  participants: Participant[] | undefined;
+  participantRows: Participant[][];
+  router: ReturnType<typeof useRouter>;
+  className?: string;
+}
 
-  // Query participants
-  const allParticipants = useQuery(api.participants.listParticipants);
-  const searchResults = useQuery(api.participants.searchParticipants, {
-    searchTerm,
-  });
-
-  const participants = searchTerm ? searchResults : allParticipants;
-
-  // Split participants into rows of 20
-  const chunkParticipants = (arr: typeof participants, size: number) => {
-    if (!arr) return [];
-    const chunks = [];
-    for (let i = 0; i < arr.length; i += size) {
-      chunks.push(arr.slice(i, i + size));
-    }
-    return chunks;
-  };
-
-  const participantRows = chunkParticipants(participants, 10);
-
+const MainContent = ({
+  searchTerm,
+  setSearchTerm,
+  allParticipants,
+  participants,
+  participantRows,
+  router,
+}: MainContentProps) => {
   return (
-    <div className="min-h-screen bg-accent bg-gradient-to-b from-[#103457] via-[#1A558A] to-[#103457]">
+    <div>
       <div className="w-full mx-auto pt-8">
         {/* Header */}
         <div className="flex items-center gap-4 mb-8 text-[#EBCC6F] max-w-7xl mx-auto">
@@ -162,23 +160,7 @@ export default function RegisteredUserPage() {
                     {/* First set */}
                     {row.map((participant) => (
                       <div key={participant._id} className="shrink-0 w-80 px-2">
-                        <Card className="hover:shadow-lg transition-shadow duration-200 border-2 hover:border-primary/20">
-                          <CardHeader className="pb-3">
-                            <div className="flex items-start gap-3">
-                              <div className="w-12 h-12 rounded-full bg-linear-to-br from-[#DCB96E] to-[#CD974E] flex items-center justify-center shrink-0">
-                                <User className="h-6 w-6 text-[#B06727]" />
-                              </div>
-                              <div className="flex-1 min-w-0">
-                                <CardTitle className="text-lg truncate">
-                                  {participant.fullName}
-                                </CardTitle>
-                                <p className="text-sm text-muted-foreground truncate mt-1">
-                                  {participant.department}
-                                </p>
-                              </div>
-                            </div>
-                          </CardHeader>
-                        </Card>
+                        <ParticipantCard participant={participant} />
                       </div>
                     ))}
 
@@ -188,23 +170,7 @@ export default function RegisteredUserPage() {
                         key={`duplicate-${participant._id}`}
                         className="shrink-0 w-80 px-2"
                       >
-                        <Card className="hover:shadow-lg transition-shadow duration-200 border-2 hover:border-primary/20">
-                          <CardHeader className="pb-3">
-                            <div className="flex items-start gap-3">
-                              <div className="w-12 h-12 rounded-full bg-linear-to-br from-[#DCB96E] to-[#CD974E] flex items-center justify-center shrink-0">
-                                <User className="h-6 w-6 text-[#B06727]" />
-                              </div>
-                              <div className="flex-1 min-w-0">
-                                <CardTitle className="text-lg truncate">
-                                  {participant.fullName}
-                                </CardTitle>
-                                <p className="text-sm text-muted-foreground truncate mt-1">
-                                  {participant.department}
-                                </p>
-                              </div>
-                            </div>
-                          </CardHeader>
-                        </Card>
+                        <ParticipantCard participant={participant} />
                       </div>
                     ))}
                   </div>
@@ -215,5 +181,132 @@ export default function RegisteredUserPage() {
         )}
       </div>
     </div>
+  );
+};
+
+const Banner = ({ direction }: { direction: "left" | "right" }) => {
+  return (
+    <div className="relative w-full">
+      <div
+        className={`flex flex-row opacity-10 ${
+          direction === "left"
+            ? "animate-banner-scroll-left"
+            : "animate-banner-scroll-right"
+        }`}
+      >
+        {/* First set */}
+        <img src={"/banner-2.png"} alt="banner" className="shrink-0" />
+        <img src={"/banner-2.png"} alt="banner" className="shrink-0" />
+        <img src={"/banner-2.png"} alt="banner" className="shrink-0" />
+        <img src={"/banner-2.png"} alt="banner" className="shrink-0" />
+        <img src={"/banner-2.png"} alt="banner" className="shrink-0" />
+        <img src={"/banner-2.png"} alt="banner" className="shrink-0" />
+        <img src={"/banner-2.png"} alt="banner" className="shrink-0" />
+        {/* Duplicate set for seamless loop */}
+        <img src={"/banner-2.png"} alt="banner" className="shrink-0" />
+        <img src={"/banner-2.png"} alt="banner" className="shrink-0" />
+        <img src={"/banner-2.png"} alt="banner" className="shrink-0" />
+        <img src={"/banner-2.png"} alt="banner" className="shrink-0" />
+        <img src={"/banner-2.png"} alt="banner" className="shrink-0" />
+        <img src={"/banner-2.png"} alt="banner" className="shrink-0" />
+        <img src={"/banner-2.png"} alt="banner" className="shrink-0" />
+      </div>
+    </div>
+  );
+};
+
+const BannerCarousels = () => {
+  return (
+    <>
+      <style jsx global>{`
+        @keyframes banner-scroll-left {
+          0% {
+            transform: translateX(0);
+          }
+          100% {
+            transform: translateX(-50%);
+          }
+        }
+        @keyframes banner-scroll-right {
+          0% {
+            transform: translateX(-50%);
+          }
+          100% {
+            transform: translateX(0);
+          }
+        }
+        .animate-banner-scroll-left {
+          animation: banner-scroll-left 30s linear infinite;
+        }
+        .animate-banner-scroll-right {
+          animation: banner-scroll-right 30s linear infinite;
+        }
+      `}</style>
+      <div className="flex justify-between gap-2 flex-col rotate-45 relative -top-[800px]">
+        <Banner direction="left" />
+        <Banner direction="right" />
+        <Banner direction="left" />
+        <Banner direction="right" />
+        <Banner direction="left" />
+        <Banner direction="right" />
+        <Banner direction="left" />
+        <Banner direction="right" />
+        <Banner direction="left" />
+        <Banner direction="right" />
+        <Banner direction="left" />
+        <Banner direction="right" />
+        <Banner direction="left" />
+        <Banner direction="right" />
+        <Banner direction="left" />
+        <Banner direction="right" />
+        <Banner direction="left" />
+        <Banner direction="right" />
+        <Banner direction="left" />
+      </div>
+    </>
+  );
+};
+
+export default function RegisteredUserPage() {
+  const router = useRouter();
+  const [searchTerm, setSearchTerm] = useState("");
+
+  // Query participants
+  const allParticipants = useQuery(api.participants.listParticipants);
+  const searchResults = useQuery(api.participants.searchParticipants, {
+    searchTerm,
+  });
+
+  const participants = searchTerm ? searchResults : allParticipants;
+
+  // Split participants into rows of 20
+  const chunkParticipants = (arr: typeof participants, size: number) => {
+    if (!arr) return [];
+    const chunks = [];
+    for (let i = 0; i < arr.length; i += size) {
+      chunks.push(arr.slice(i, i + size));
+    }
+    return chunks;
+  };
+
+  const participantRows = chunkParticipants(participants, 10);
+
+  return (
+    <Stack className="w-full min-h-screen">
+      <div className="bg-linear-to-b from-[#103457] via-[#1A558A] to-[#103457] overflow-hidden max-w-[100vw] max-h-screen">
+        <BannerCarousels />
+      </div>
+
+      <div>
+        <MainContent
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+          allParticipants={allParticipants}
+          participants={participants}
+          participantRows={participantRows}
+          router={router}
+        />
+      </div>
+    </Stack>
   );
 }
