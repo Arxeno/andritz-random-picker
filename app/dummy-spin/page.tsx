@@ -128,7 +128,7 @@ export default function DummySpinPage() {
 
   // Handle spin complete (called by Wheel component)
   const handleSpinComplete = useCallback(
-    (selectedWinner: { _id: any; fullName: string; department: string }) => {
+    (selectedWinner: { _id: any; fullName: string }) => {
       // Find the original dummy participant by matching fullName
       const dummyWinner = participants.find(
         (p) => p.fullName === selectedWinner.fullName,
@@ -142,7 +142,7 @@ export default function DummySpinPage() {
         fireConfetti();
 
         toast.success("Winner selected! 🎉", {
-          description: `${dummyWinner.fullName} from ${dummyWinner.department}`,
+          description: `${dummyWinner.fullName}`,
         });
       }
     },
@@ -356,8 +356,8 @@ export default function DummySpinPage() {
                   <Wheel
                     participants={participants.map((p) => ({
                       _id: p.id as any,
-                      fullName: p.fullName,
-                      department: p.department,
+                      fullName: p.fullName
+                      // department: p.department,
                     }))}
                     isSpinning={spinState === "spinning"}
                     onSpinComplete={handleSpinComplete}
@@ -444,10 +444,10 @@ export default function DummySpinPage() {
                 {winner.fullName}
               </h2>
               <div className="space-y-2 text-lg">
-                <p>
+                {/* <p>
                   <span className="font-semibold">Department:</span>{" "}
                   {winner.department}
-                </p>
+                </p> */}
                 <p className="text-sm text-muted-foreground">ID: {winner.id}</p>
               </div>
             </div>

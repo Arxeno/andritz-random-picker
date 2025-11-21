@@ -26,7 +26,6 @@ import { Id } from "@/convex/_generated/dataModel";
 interface Participant {
   _id: Id<"participants">;
   fullName: string;
-  department: string;
 }
 
 interface ParticipantTableProps {

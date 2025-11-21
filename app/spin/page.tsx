@@ -44,7 +44,6 @@ import useSound from "use-sound";
 interface Participant {
   _id: Id<"participants">;
   fullName: string;
-  department: string;
 }
 
 interface Prize {
@@ -130,7 +129,7 @@ export default function SpinPage() {
     setWinnerDialogOpen(true);
 
     toast.success("Winner selected! 🎉", {
-      description: `${selectedWinner.fullName} from ${selectedWinner.department}`,
+      description: `${selectedWinner.fullName}`,
     });
   }, []);
 
@@ -411,12 +410,6 @@ export default function SpinPage() {
               <h2 className="text-4xl font-bold text-primary">
                 {winner.fullName}
               </h2>
-              <div className="space-y-2 text-lg">
-                <p>
-                  <span className="font-semibold">Department:</span>{" "}
-                  {winner.department}
-                </p>
-              </div>
             </div>
 
             <DialogFooter className="grid grid-cols-2 gap-2 w-full">

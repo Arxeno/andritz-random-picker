@@ -19,7 +19,6 @@ import { api } from "@/convex/_generated/api";
 interface Winner {
   _id: Id<"winners">;
   participantName: string;
-  participantDepartment: string;
   prizeName?: string;
   prizeImageStorageId?: Id<"_storage">;
   _creationTime: number;
@@ -55,7 +54,6 @@ export function WinnerTable({ winners }: WinnerTableProps) {
     return winners.filter(
       (winner) =>
         winner.participantName.toLowerCase().includes(lowerSearch) ||
-        winner.participantDepartment.toLowerCase().includes(lowerSearch) ||
         (winner.prizeName &&
           winner.prizeName.toLowerCase().includes(lowerSearch)),
     );
@@ -116,7 +114,6 @@ export function WinnerTable({ winners }: WinnerTableProps) {
                       <TableCell className="font-medium">
                         {winner.participantName}
                       </TableCell>
-                      <TableCell>{winner.participantDepartment}</TableCell>
                       <TableCell>
                         {winner.prizeName ? (
                           <div className="flex items-center gap-2">

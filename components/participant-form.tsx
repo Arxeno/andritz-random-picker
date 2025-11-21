@@ -13,11 +13,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { AlertCircle, CheckCircle2, UserPlus } from "lucide-react";
-import { DEPARTMENTS } from "@/lib/constants";
+// import { DEPARTMENTS } from "@/lib/constants";
 
 interface ParticipantFormProps {
-  onSubmit: (data: { fullName: string; department: string }) => Promise<void>;
-  initialData?: { fullName: string; department: string };
+  onSubmit: (data: { fullName: string }) => Promise<void>;
+  initialData?: { fullName: string};
   submitLabel?: string;
   title?: string;
 }
@@ -29,7 +29,7 @@ export function ParticipantForm({
   title = "Add Participant",
 }: ParticipantFormProps) {
   const [fullName, setFullName] = useState(initialData?.fullName || "");
-  const [department, setDepartment] = useState(initialData?.department || "");
+  // const [department, setDepartment] = useState(initialData?.department || "");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
@@ -41,12 +41,11 @@ export function ParticipantForm({
     setIsLoading(true);
 
     try {
-      await onSubmit({ fullName, department });
+      await onSubmit({ fullName});
 
       // Clear form only if not editing (no initial data)
       if (!initialData) {
         setFullName("");
-        setDepartment("");
       }
 
       setSuccess(true);
@@ -83,26 +82,7 @@ export function ParticipantForm({
               />
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="department">Department *</Label>
-              <Select
-                value={department}
-                onValueChange={setDepartment}
-                disabled={isLoading}
-                required
-              >
-                <SelectTrigger id="department">
-                  <SelectValue placeholder="Select department" />
-                </SelectTrigger>
-                <SelectContent>
-                  {DEPARTMENTS.map((dept) => (
-                    <SelectItem key={dept} value={dept}>
-                      {dept}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+          
           </div>
 
           {error && (

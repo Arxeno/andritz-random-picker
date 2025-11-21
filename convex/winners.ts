@@ -49,7 +49,6 @@ export const confirmWinner = mutation({
     const winnerId = await ctx.db.insert("winners", {
       participantId: args.participantId,
       participantName: participant.fullName,
-      participantDepartment: participant.department,
       prizeId: args.prizeId,
       prizeName,
       prizeImageStorageId,
