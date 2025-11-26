@@ -95,7 +95,7 @@ export const listGroupedPrizes = query({
     }
 
     return Array.from(grouped.values()).sort((a, b) => 
-      b.createdAt - a.createdAt
+      a.createdAt - b.createdAt
     );
   },
 });
