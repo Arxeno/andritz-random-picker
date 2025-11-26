@@ -313,8 +313,8 @@ export default function SpinPage() {
         </Button>
 
         {/* Page title */}
-        <div className="text-center mb-4">
-          <h1 className="text-4xl font-bold mb-2 text-white uppercase">Spin the Wheel</h1>
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-bold  text-white uppercase">Spin the Wheel</h1>
           <p className="text-muted-foreground text-lg">
             {hasNoParticipants ? (
               "No participants yet. Add participants first."
@@ -497,6 +497,9 @@ export default function SpinPage() {
             <div className="text-center space-y-4 py-4">
               <h2 className="text-4xl font-bold text-primary">
                 {winner.fullName}
+              </h2>
+              <h2 className="text-md font-normal text-blue-950">
+                {selectedPrize?.name}
               </h2>
             </div>
 
