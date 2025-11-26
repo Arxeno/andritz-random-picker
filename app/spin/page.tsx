@@ -498,7 +498,8 @@ export default function SpinPage() {
               <h2 className="text-4xl font-bold text-primary">
                 {winner.fullName}
               </h2>
-              <h2 className="text-md font-normal text-blue-950">
+              <h2 className="flex flex-col border rounded-md shadow-xs py-2 gap-2 text-md font-normal text-blue-950">
+                <p className="text-blue-950/20">Prize</p>
                 {selectedPrize?.name}
               </h2>
             </div>
