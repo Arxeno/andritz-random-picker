@@ -92,7 +92,7 @@ export default function RegisterQRPage() {
                   <div>
                     <h3 className="text-base font-semibold mb-2">Register</h3>
                     <p className="text-base text-muted-foreground">
-                      Fill in your name and department to register
+                      Fill in your name to register
                     </p>
                   </div>
                 </div>

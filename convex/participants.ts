@@ -7,21 +7,17 @@ import { v } from "convex/values";
 export const addParticipant = mutation({
   args: {
     fullName: v.string(),
-    department: v.string(),
   },
   handler: async (ctx, args) => {
     // Validate inputs
     if (!args.fullName.trim()) {
       throw new Error("Full name is required");
     }
-    if (!args.department.trim()) {
-      throw new Error("Department is required");
-    }
+  
 
     // Insert participant
     const participantId = await ctx.db.insert("participants", {
-      fullName: args.fullName.trim(),
-      department: args.department.trim(),
+      fullName: args.fullName.trim()
     });
 
     return participantId;
@@ -35,26 +31,21 @@ export const addParticipant = mutation({
 export const registerParticipant = mutation({
   args: {
     fullName: v.string(),
-    department: v.string(),
   },
   handler: async (ctx, args) => {
     // Validate inputs
     if (!args.fullName.trim()) {
       throw new Error("Full name is required");
     }
-    if (!args.department.trim()) {
-      throw new Error("Department is required");
-    }
+   
 
     const trimmedName = args.fullName.trim();
-    const trimmedDepartment = args.department.trim();
 
     // Check for duplicate (same name and department)
     const allParticipants = await ctx.db.query("participants").collect();
     const duplicate = allParticipants.find(
       (p) =>
-        p.fullName.toLowerCase() === trimmedName.toLowerCase() &&
-        p.department.toLowerCase() === trimmedDepartment.toLowerCase(),
+        p.fullName.toLowerCase() === trimmedName.toLowerCase() 
     );
 
     if (duplicate) {
@@ -65,8 +56,7 @@ export const registerParticipant = mutation({
 
     // Insert participant
     const participantId = await ctx.db.insert("participants", {
-      fullName: trimmedName,
-      department: trimmedDepartment,
+      fullName: trimmedName
     });
 
     return participantId;
@@ -105,8 +95,7 @@ export const searchParticipants = query({
     const searchLower = args.searchTerm.toLowerCase();
     const filtered = allParticipants.filter(
       (p) =>
-        p.fullName.toLowerCase().includes(searchLower) ||
-        p.department.toLowerCase().includes(searchLower),
+        p.fullName.toLowerCase().includes(searchLower) 
     );
 
     return filtered.sort((a, b) => a.fullName.localeCompare(b.fullName));
@@ -120,21 +109,17 @@ export const updateParticipant = mutation({
   args: {
     id: v.id("participants"),
     fullName: v.string(),
-    department: v.string(),
   },
   handler: async (ctx, args) => {
     // Validate inputs
     if (!args.fullName.trim()) {
       throw new Error("Full name is required");
     }
-    if (!args.department.trim()) {
-      throw new Error("Department is required");
-    }
+
 
     // Update participant
     await ctx.db.patch(args.id, {
       fullName: args.fullName.trim(),
-      department: args.department.trim(),
     });
 
     return args.id;
@@ -195,7 +180,6 @@ export const bulkAddParticipants = mutation({
     participants: v.array(
       v.object({
         fullName: v.string(),
-        department: v.string(),
       }),
     ),
   },
@@ -214,14 +198,11 @@ export const bulkAddParticipants = mutation({
         if (!participant.fullName?.trim()) {
           throw new Error("Full name is required");
         }
-        if (!participant.department?.trim()) {
-          throw new Error("Department is required");
-        }
+     
 
         // Insert
         await ctx.db.insert("participants", {
           fullName: participant.fullName.trim(),
-          department: participant.department.trim(),
         });
 
         results.success++;

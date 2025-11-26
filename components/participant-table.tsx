@@ -26,7 +26,6 @@ import { Id } from "@/convex/_generated/dataModel";
 interface Participant {
   _id: Id<"participants">;
   fullName: string;
-  department: string;
 }
 
 interface ParticipantTableProps {
@@ -84,7 +83,6 @@ export function ParticipantTable({
           <TableHeader>
             <TableRow>
               <TableHead>Full Name</TableHead>
-              <TableHead>Department</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
@@ -94,7 +92,6 @@ export function ParticipantTable({
                 <TableCell className="font-medium">
                   {participant.fullName}
                 </TableCell>
-                <TableCell>{participant.department}</TableCell>
                 <TableCell className="text-right">
                   <div className="flex justify-end gap-2">
                     <Button

@@ -6,7 +6,7 @@ interface ParticipantCardProps {
   participant: {
     _id: Id<"participants">;
     fullName: string;
-    department: string;
+    // department: string;
   };
 }
 

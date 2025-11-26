@@ -17,7 +17,7 @@ import Image from "next/image";
 interface Participant {
   _id: Id<"participants">;
   fullName: string;
-  department: string;
+  // department: string;
 }
 
 interface MainContentProps {
@@ -72,7 +72,7 @@ const MainContent = ({
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-[#B06727]" />
                 <Input
-                  placeholder="Search by name or department..."
+                  placeholder="Search by name"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="pl-10 text-[#103457] placeholder:text-[#B06727]"

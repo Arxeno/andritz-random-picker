@@ -25,7 +25,7 @@ import { toast } from "sonner";
 interface Participant {
   _id: Id<"participants">;
   fullName: string;
-  department: string;
+  // department: string;
 }
 
 export default function ParticipantsPage() {
@@ -52,7 +52,7 @@ export default function ParticipantsPage() {
 
   const handleAddParticipant = async (data: {
     fullName: string;
-    department: string;
+    // department: string;
   }) => {
     try {
       await addParticipant(data);
@@ -67,7 +67,6 @@ export default function ParticipantsPage() {
 
   const handleUpdateParticipant = async (data: {
     fullName: string;
-    department: string;
   }) => {
     if (!editingParticipant) return;
 
@@ -99,7 +98,7 @@ export default function ParticipantsPage() {
   };
 
   const handleBulkImport = async (
-    importedParticipants: { fullName: string; department: string }[],
+    importedParticipants: { fullName: string }[],
   ) => {
     try {
       const result = await bulkAddParticipants({

@@ -11,14 +11,12 @@ export default defineSchema({
   // Participants table - stores all event participants
   participants: defineTable({
     fullName: v.string(),
-    department: v.string(),
   }),
 
   // Winners table - stores confirmed winners with denormalized participant data
   winners: defineTable({
     participantId: v.id("participants"),
     participantName: v.string(), // Denormalized for easy export
-    participantDepartment: v.string(), // Denormalized for easy export
     prizeId: v.optional(v.id("prizes")), // Optional prize assignment
     prizeName: v.optional(v.string()), // Denormalized prize name
     prizeImageStorageId: v.optional(v.id("_storage")), // Denormalized prize image
