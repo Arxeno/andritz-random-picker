@@ -95,7 +95,7 @@ export default function DummySpinPage() {
   const fireConfetti = useCallback(() => {
     if (!confettiRef.current) return;
 
-    const duration = 3000;
+    const duration = 1500;
     const animationEnd = Date.now() + duration;
 
     const randomInRange = (min: number, max: number) => {

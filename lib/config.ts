@@ -9,9 +9,9 @@
 export const WHEEL_CONFIG = {
   /**
    * Duration of the wheel spin animation in milliseconds
-   * @default 30000 (30 seconds)
+   * @default 20000 (20 seconds)
    */
-  SPIN_DURATION: 30000,
+  SPIN_DURATION: 20000,
 
   /**
    * Number of full rotations the wheel makes during spin
