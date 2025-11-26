@@ -22,11 +22,11 @@ import {
 } from "@/components/ui/select";
 import { toast } from "sonner";
 import { UserPlus, CheckCircle, Loader2 } from "lucide-react";
-import { DEPARTMENTS } from "@/lib/constants";
+// import { DEPARTMENTS } from "@/lib/constants";
 
 export default function RegisterPage() {
   const [fullName, setFullName] = useState("");
-  const [department, setDepartment] = useState("");
+  // const [department, setDepartment] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
@@ -41,17 +41,17 @@ export default function RegisterPage() {
       return;
     }
 
-    if (!department) {
-      toast.error("Please select your department");
-      return;
-    }
+    // if (!department) {
+    //   toast.error("Please select your department");
+    //   return;
+    // }
 
     setIsSubmitting(true);
 
     try {
       await registerParticipant({
-        fullName: fullName.trim(),
-        department: department.trim(),
+        fullName: fullName.trim()
+        // department: department.trim(),
       });
 
       toast.success("Registration successful! 🎉", {
@@ -60,7 +60,7 @@ export default function RegisterPage() {
 
       // Clear form and show success state
       setFullName("");
-      setDepartment("");
+      // setDepartment("");
       setIsSuccess(true);
 
       // Reset success state after 3 seconds
@@ -120,7 +120,7 @@ export default function RegisterPage() {
                 />
               </div>
 
-              <div className="space-y-2">
+              {/* <div className="space-y-2">
                 <Label htmlFor="department">Department</Label>
                 <Select
                   value={department}
@@ -139,7 +139,7 @@ export default function RegisterPage() {
                     ))}
                   </SelectContent>
                 </Select>
-              </div>
+              </div> */}
 
               <Button
                 type="submit"

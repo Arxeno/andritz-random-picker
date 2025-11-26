@@ -64,7 +64,7 @@ export default function ExportPage() {
 
       const data = sortedWinners.map((winner) => ({
         "Winner Name": winner.participantName,
-        Department: winner.participantDepartment,
+        // Department: winner.participantDepartment,
         Prize: winner.prizeName || "No prize assigned",
         "Date Won": formatDate(winner._creationTime),
         "Time Won": formatTime(winner._creationTime),
@@ -76,7 +76,7 @@ export default function ExportPage() {
       // Auto-size columns
       const colWidths = [
         { wch: 20 }, // Winner Name
-        { wch: 20 }, // Department
+        // { wch: 20 }, // Department
         { wch: 30 }, // Prize
         { wch: 15 }, // Date Won
         { wch: 10 }, // Time Won

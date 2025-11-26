@@ -40,6 +40,7 @@ import {
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import useSound from "use-sound";
+import Stack from "@/components/stack";
 
 interface Participant {
   _id: Id<"participants">;
@@ -64,6 +65,89 @@ interface GroupedPrize {
 
 type SpinState = "idle" | "spinning" | "winner";
 type ConfirmState = "idle" | "saving" | "confirmed" | "error";
+
+const Banner = ({ direction }: { direction: "left" | "right" }) => {
+  return (
+    <div className="relative w-full">
+      <div
+        className={`flex flex-row opacity-10 ${
+          direction === "left"
+            ? "animate-banner-scroll-left"
+            : "animate-banner-scroll-right"
+        }`}
+      >
+        {/* First set */}
+        <img src={"/banner-2.png"} alt="banner" className="shrink-0" />
+        <img src={"/banner-2.png"} alt="banner" className="shrink-0" />
+        <img src={"/banner-2.png"} alt="banner" className="shrink-0" />
+        <img src={"/banner-2.png"} alt="banner" className="shrink-0" />
+        <img src={"/banner-2.png"} alt="banner" className="shrink-0" />
+        <img src={"/banner-2.png"} alt="banner" className="shrink-0" />
+        <img src={"/banner-2.png"} alt="banner" className="shrink-0" />
+        {/* Duplicate set for seamless loop */}
+        <img src={"/banner-2.png"} alt="banner" className="shrink-0" />
+        <img src={"/banner-2.png"} alt="banner" className="shrink-0" />
+        <img src={"/banner-2.png"} alt="banner" className="shrink-0" />
+        <img src={"/banner-2.png"} alt="banner" className="shrink-0" />
+        <img src={"/banner-2.png"} alt="banner" className="shrink-0" />
+        <img src={"/banner-2.png"} alt="banner" className="shrink-0" />
+        <img src={"/banner-2.png"} alt="banner" className="shrink-0" />
+      </div>
+    </div>
+  );
+};
+
+const BannerCarousels = () => {
+  return (
+    <>
+      <style jsx global>{`
+        @keyframes banner-scroll-left {
+          0% {
+            transform: translateX(0);
+          }
+          100% {
+            transform: translateX(-50%);
+          }
+        }
+        @keyframes banner-scroll-right {
+          0% {
+            transform: translateX(-50%);
+          }
+          100% {
+            transform: translateX(0);
+          }
+        }
+        .animate-banner-scroll-left {
+          animation: banner-scroll-left 30s linear infinite;
+        }
+        .animate-banner-scroll-right {
+          animation: banner-scroll-right 30s linear infinite;
+        }
+      `}</style>
+      <div className="flex justify-between gap-2 flex-col rotate-45 relative -top-[800px]">
+        <Banner direction="left" />
+        <Banner direction="right" />
+        <Banner direction="left" />
+        <Banner direction="right" />
+        <Banner direction="left" />
+        <Banner direction="right" />
+        <Banner direction="left" />
+        <Banner direction="right" />
+        <Banner direction="left" />
+        <Banner direction="right" />
+        <Banner direction="left" />
+        <Banner direction="right" />
+        <Banner direction="left" />
+        <Banner direction="right" />
+        <Banner direction="left" />
+        <Banner direction="right" />
+        <Banner direction="left" />
+        <Banner direction="right" />
+        <Banner direction="left" />
+      </div>
+    </>
+  );
+};
 
 export default function SpinPage() {
   const router = useRouter();
@@ -211,7 +295,11 @@ export default function SpinPage() {
   const hasNoParticipants = participants.length === 0;
 
   return (
-    <>
+    <Stack className="w-full h-screen overflow-hidden">
+      <div className="bg-linear-to-b from-[#103457] via-[#1A558A] to-[#103457] overflow-hidden max-w-[100vw] max-h-screen">
+        <BannerCarousels />
+      </ div>
+    <div>
       <Header />
       <main className="container py-8 max-w-7xl mx-auto">
         {/* Back button */}
@@ -460,7 +548,8 @@ export default function SpinPage() {
           </DialogContent>
         </Dialog>
       )}
-    </>
+    </div>
+    </Stack>
   );
 }
 
