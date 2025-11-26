@@ -301,7 +301,7 @@ export default function SpinPage() {
       </ div>
     <div>
       <Header />
-      <main className="container py-8 max-w-7xl mx-auto">
+      <main className="container  max-w-7xl mx-auto">
         {/* Back button */}
         <Button
           variant="ghost"
@@ -313,8 +313,8 @@ export default function SpinPage() {
         </Button>
 
         {/* Page title */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold mb-2">Spin the Wheel</h1>
+        <div className="text-center mb-4">
+          <h1 className="text-4xl font-bold mb-2 text-white uppercase">Spin the Wheel</h1>
           <p className="text-muted-foreground text-lg">
             {hasNoParticipants ? (
               "No participants yet. Add participants first."
@@ -348,7 +348,7 @@ export default function SpinPage() {
             <div className="flex justify-center gap-6">
               {/* Prize Carousel */}
               <div className="max-w-2xl mx-auto">
-                <h2 className="text-2xl font-bold text-center mb-4">
+                <h2 className="text-2xl font-bold text-center mb-4 text-white">
                   Current Prize
                 </h2>
                 {!availablePrizes || availablePrizes.length === 0 ? (
