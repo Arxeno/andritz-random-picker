@@ -256,6 +256,7 @@ export default function SpinPage() {
       toast.success("Winner confirmed! 🎉", {
         description: `${winner.fullName} has been saved to the winner list.`,
       });
+      setWinnerDialogOpen(false)
     } catch (error) {
       setConfirmState("error");
       console.error("Failed to confirm winner:", error);
