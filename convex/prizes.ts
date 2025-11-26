@@ -66,6 +66,8 @@ export const listGroupedPrizes = query({
         availableCount: number;
         wonCount: number;
         prizeIds: Id<"prizes">[];
+        createdAt:number;
+        
       }
     >();
 
@@ -87,12 +89,13 @@ export const listGroupedPrizes = query({
           availableCount: prize.status === "available" ? 1 : 0,
           wonCount: prize.status === "won" ? 1 : 0,
           prizeIds: [prize._id],
+          createdAt : prize._creationTime
         });
       }
     }
 
-    return Array.from(grouped.values()).sort((a, b) =>
-      a.name.localeCompare(b.name),
+    return Array.from(grouped.values()).sort((a, b) => 
+      b.createdAt - a.createdAt
     );
   },
 });

@@ -40,6 +40,8 @@ interface GroupedPrize {
   availableCount: number;
   wonCount: number;
   prizeIds: Id<"prizes">[];
+  
+
 }
 
 interface PrizeTableProps {
@@ -55,7 +57,7 @@ interface PrizeTableProps {
 export function PrizeTable({ prizes, onEdit, onDelete }: PrizeTableProps) {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [prizeToDelete, setPrizeToDelete] = useState<string | null>(null);
-
+ 
   const handleDeleteClick = (prizeName: string) => {
     setPrizeToDelete(prizeName);
     setDeleteDialogOpen(true);
@@ -96,7 +98,7 @@ export function PrizeTable({ prizes, onEdit, onDelete }: PrizeTableProps) {
                   <TableHead className="w-[100px]">Image</TableHead>
                   <TableHead>Prize Name</TableHead>
                   <TableHead className="w-[100px]">Quantity</TableHead>
-                  <TableHead className="w-[120px]">Status</TableHead>
+                  <TableHead className="w-[120px]" >Status</TableHead>
                   <TableHead className="text-right w-[150px]">
                     Actions
                   </TableHead>
