@@ -13,11 +13,10 @@ export const addParticipant = mutation({
     if (!args.fullName.trim()) {
       throw new Error("Full name is required");
     }
-  
 
     // Insert participant
     const participantId = await ctx.db.insert("participants", {
-      fullName: args.fullName.trim()
+      fullName: args.fullName.trim(),
     });
 
     return participantId;
@@ -26,7 +25,7 @@ export const addParticipant = mutation({
 
 /**
  * Register a participant (public - no auth required)
- * Checks for duplicates based on name and department
+ * Checks for duplicates based on name
  */
 export const registerParticipant = mutation({
   args: {
@@ -37,26 +36,22 @@ export const registerParticipant = mutation({
     if (!args.fullName.trim()) {
       throw new Error("Full name is required");
     }
-   
 
     const trimmedName = args.fullName.trim();
 
-    // Check for duplicate (same name and department)
+    // Check for duplicate (same name)
     const allParticipants = await ctx.db.query("participants").collect();
     const duplicate = allParticipants.find(
-      (p) =>
-        p.fullName.toLowerCase() === trimmedName.toLowerCase() 
+      (p) => p.fullName.toLowerCase() === trimmedName.toLowerCase(),
     );
 
     if (duplicate) {
-      throw new Error(
-        "A participant with this name and department already exists",
-      );
+      throw new Error("A participant with this name already exists");
     }
 
     // Insert participant
     const participantId = await ctx.db.insert("participants", {
-      fullName: trimmedName
+      fullName: trimmedName,
     });
 
     return participantId;
@@ -77,7 +72,7 @@ export const listParticipants = query({
 });
 
 /**
- * Search participants by name or department
+ * Search participants by name
  */
 export const searchParticipants = query({
   args: {
@@ -93,9 +88,8 @@ export const searchParticipants = query({
     }
 
     const searchLower = args.searchTerm.toLowerCase();
-    const filtered = allParticipants.filter(
-      (p) =>
-        p.fullName.toLowerCase().includes(searchLower) 
+    const filtered = allParticipants.filter((p) =>
+      p.fullName.toLowerCase().includes(searchLower),
     );
 
     return filtered.sort((a, b) => a.fullName.localeCompare(b.fullName));
@@ -115,7 +109,6 @@ export const updateParticipant = mutation({
     if (!args.fullName.trim()) {
       throw new Error("Full name is required");
     }
-
 
     // Update participant
     await ctx.db.patch(args.id, {
@@ -198,7 +191,6 @@ export const bulkAddParticipants = mutation({
         if (!participant.fullName?.trim()) {
           throw new Error("Full name is required");
         }
-     
 
         // Insert
         await ctx.db.insert("participants", {
