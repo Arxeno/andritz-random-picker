@@ -9,7 +9,7 @@ export const getCurrentUserRole = query({
   args: {},
   handler: async (ctx) => {
     const userId = await auth.getUserId(ctx);
-    
+
     if (!userId) {
       return null;
     }
@@ -76,7 +76,7 @@ export const hasRole = query({
   args: { role: v.union(v.literal("ADMIN"), v.literal("STAFF")) },
   handler: async (ctx, args) => {
     const userId = await auth.getUserId(ctx);
-    
+
     if (!userId) {
       return false;
     }
@@ -97,7 +97,7 @@ export const isAdmin = query({
   args: {},
   handler: async (ctx) => {
     const userId = await auth.getUserId(ctx);
-    
+
     if (!userId) {
       return false;
     }
@@ -111,3 +111,14 @@ export const isAdmin = query({
   },
 });
 
+/**
+ * Check if there is any user with ADMIN role in the system
+ */
+export const hasAdminUser = query({
+  args: {},
+  handler: async (ctx) => {
+    const adminRole = await ctx.db.query("userRoles").collect();
+
+    return adminRole.some((role) => role.role === "ADMIN");
+  },
+});

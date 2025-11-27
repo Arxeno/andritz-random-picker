@@ -29,7 +29,7 @@ export default function SetupAdmin() {
   const [success, setSuccess] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-  const hasUsers = useQuery(api.adminSetup.hasUsers);
+  const hasUsers = useQuery(api.userRoles.hasAdminUser);
   const assignAdminRole = useMutation(api.adminSetup.assignAdminRole);
 
   // If users already exist, show message
