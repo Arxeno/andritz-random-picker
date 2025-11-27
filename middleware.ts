@@ -1,5 +1,6 @@
 import {
   convexAuthNextjsMiddleware,
+  convexAuthNextjsToken,
   createRouteMatcher,
   nextjsMiddlewareRedirect,
 } from "@convex-dev/auth/nextjs/server";
@@ -51,7 +52,7 @@ export default convexAuthNextjsMiddleware(async (request, { convexAuth }) => {
     const userRole = await fetchQuery(
       api.userRoles.getCurrentUserRole,
       {},
-      { token: await convexAuth.fetchAccessToken() },
+      { token: await convexAuthNextjsToken() },
     );
 
     // If user has no role assigned, redirect to signin
