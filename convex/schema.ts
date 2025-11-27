@@ -29,4 +29,11 @@ export default defineSchema({
     imageStorageId: v.optional(v.id("_storage")), // Convex file storage ID
     status: v.union(v.literal("available"), v.literal("won")), // Prize status
   }).index("by_status", ["status"]),
+
+  // User roles table - stores role assignments for users
+  // This extends the auth system with role-based access control
+  userRoles: defineTable({
+    userId: v.id("users"),
+    role: v.union(v.literal("ADMIN"), v.literal("STAFF")),
+  }).index("by_user", ["userId"]),
 });
